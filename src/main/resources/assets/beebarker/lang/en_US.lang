@@ -1,1 +1,9 @@
 item.BeeBarker.name=Bee Barker
+
+beebarker.beeCharge=Bee Charge
+beebarker.beeCharge.unlimited=Unlimited
+
+beebarker.easteregg.item=Easter Egg!
+
+death.attack.beeburnt=%1$s was sautéed with a dog by %2$s
+death.attack.beestung=%1$s was stung by a bee from %2$s

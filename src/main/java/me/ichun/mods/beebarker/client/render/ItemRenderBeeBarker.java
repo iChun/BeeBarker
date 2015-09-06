@@ -2,6 +2,8 @@ package me.ichun.mods.beebarker.client.render;
 
 import me.ichun.mods.beebarker.client.core.TickHandlerClient;
 import me.ichun.mods.beebarker.common.BeeBarker;
+import me.ichun.mods.beebarker.common.core.EventHandler;
+import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -17,6 +19,7 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -80,7 +83,13 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
         boolean isItemRender = currentPerspective == null || currentPerspective == ItemCameraTransforms.TransformType.GUI || currentPerspective == ItemCameraTransforms.TransformType.NONE;
         boolean isFirstPerson = currentPerspective == ItemCameraTransforms.TransformType.FIRST_PERSON && lastPlayer == mc.thePlayer;
 
-        float curveProg = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((float)Math.pow((((TickHandlerClient.PULL_TIME - BeeBarker.proxy.tickHandlerClient.pullTime) + iChunUtil.proxy.tickHandlerClient.renderTick) / TickHandlerClient.PULL_TIME), 0.5D), 0.0F, 1.0F) * 180F));
+        float pullTime = ((TickHandlerClient.PULL_TIME - BeeBarker.proxy.tickHandlerClient.pullTime) + iChunUtil.proxy.tickHandlerClient.renderTick);
+        if(isFirstPerson && BeeBarker.proxy.tickHandlerClient.pressState.contains(mc.thePlayer.getCommandSenderName()) && BeeBarker.proxy.tickHandlerClient.pullTime == 7)
+        {
+            pullTime = (TickHandlerClient.PULL_TIME - BeeBarker.proxy.tickHandlerClient.pullTime);
+        }
+
+        float curveProg = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((float)Math.pow((pullTime / TickHandlerClient.PULL_TIME), 0.5D), 0.0F, 1.0F) * 180F));
 
         if(currentPerspective == ItemCameraTransforms.TransformType.THIRD_PERSON || currentPerspective == ItemCameraTransforms.TransformType.FIRST_PERSON)
         {
@@ -115,7 +124,7 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
 
         //Render collar
         mc.getTextureManager().bindTexture(ResourceHelper.texWolfCollar);
-        EnumDyeColor enumdyecolor = EnumDyeColor.byMetadata(heldStack != null ? heldStack.getItemDamage() : 12);
+        EnumDyeColor enumdyecolor = EnumDyeColor.byDyeDamage(heldStack != null && heldStack.getTagCompound() != null && heldStack.getTagCompound().hasKey(ItemBeeBarker.WOLF_DATA_STRING) ? ((NBTTagCompound)heldStack.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).getByte("CollarColor") : 12);
         float[] afloat = EntitySheep.func_175513_a(enumdyecolor);
         GlStateManager.color(afloat[0], afloat[1], afloat[2]);
         modelWolf.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);

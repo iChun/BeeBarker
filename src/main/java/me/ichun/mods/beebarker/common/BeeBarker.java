@@ -4,6 +4,7 @@ import me.ichun.mods.beebarker.common.core.BarkHelper;
 import me.ichun.mods.beebarker.common.core.CommonProxy;
 import me.ichun.mods.beebarker.common.core.Config;
 import me.ichun.mods.beebarker.common.packet.PacketBark;
+import me.ichun.mods.beebarker.common.packet.PacketKeyState;
 import me.ichun.mods.beebarker.common.packet.PacketSpawnParticles;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
@@ -48,7 +49,7 @@ public class BeeBarker
 
         proxy.preInit();
 
-        channel = ChannelHandler.getChannelHandlers(MOD_NAME, PacketBark.class, PacketSpawnParticles.class);
+        channel = ChannelHandler.getChannelHandlers(MOD_NAME, PacketBark.class, PacketSpawnParticles.class, PacketKeyState.class);
 
         ModVersionChecker.register_iChunMod(new ModVersionInfo(MOD_NAME, iChunUtil.versionOfMC, VERSION, false));
     }
@@ -63,5 +64,6 @@ public class BeeBarker
     public void onServerStopping(FMLServerStoppingEvent event)
     {
         BarkHelper.cooldown.clear();
+        BarkHelper.pressState.clear();
     }
 }
