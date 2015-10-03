@@ -128,7 +128,7 @@ public class EntityBee extends Entity
             {
                 Entity var10 = (Entity)var6.get(var9);
 
-                if(var10 instanceof EntityBee)
+                if(var10 instanceof EntityBee || ticksExisted < 7 && var10 == shooter)
                 {
                     continue;
                 }
