@@ -7,9 +7,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -59,6 +61,12 @@ public class ItemBeeBarker extends Item
         return true;
     }
 
+    @Override
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target)
+    {
+        return true;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List itemList)
@@ -81,6 +89,7 @@ public class ItemBeeBarker extends Item
         if(BeeBarker.config.easterEgg == 1)
         {
             wolfTag = new NBTTagCompound();
+            wolf.setCollarColor(EnumDyeColor.BLUE);
             wolf.setCustomNameTag("iChun");
             wolf.writeToNBTOptional(wolfTag);
             wolfStack = new ItemStack(BeeBarker.itemBeeBarker, 1, 0); //Special unlimited BeeBarker

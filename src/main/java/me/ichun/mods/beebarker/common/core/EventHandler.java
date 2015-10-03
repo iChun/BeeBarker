@@ -102,7 +102,7 @@ public class EventHandler
         {
             EntityWolf wolf = (EntityWolf)event.entity;
             NBTTagCompound wolfData = wolf.getEntityData();
-            if(wolfData.getBoolean(BARKABLE_STRING) && wolf.getRNG().nextFloat() < 0.1F)
+            if(wolfData.getBoolean(BARKABLE_STRING) && wolf.getRNG().nextFloat() < 0.05F)
             {
                 for(int i = 0; i < wolf.getRNG().nextInt(5) + 1; i++)
                 {
