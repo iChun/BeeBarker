@@ -122,6 +122,19 @@ public class EventHandler
             if(wolf.isTamed() && !wolf.isInvisible() && wolf.getOwner() == event.entityPlayer && !event.entityPlayer.isSneaking())
             {
                 ItemStack is = event.entityPlayer.getHeldItem();
+                boolean forestryCheck = false; //Check if the item is a forestry bee.
+                if(BeeBarker.isForestryInstalled)
+                {
+                    try
+                    {
+                        Class clz = Class.forName("forestry.apiculture.items.ItemBeeGE");
+                        if(clz.isInstance(is.getItem()))
+                        {
+                            forestryCheck = true;
+                        }
+                    }
+                    catch(ClassNotFoundException ignored){}
+                }
                 if(is == null)
                 {
                     NBTTagCompound wolfData = wolf.getEntityData();
@@ -143,7 +156,7 @@ public class EventHandler
                         event.setCanceled(true);
                     }
                 }
-                else if(Block.getBlockFromItem(is.getItem()) instanceof BlockFlower)
+                else if(Block.getBlockFromItem(is.getItem()) instanceof BlockFlower || forestryCheck)
                 {
                     NBTTagCompound wolfData = wolf.getEntityData();
                     if(!event.entityPlayer.worldObj.isRemote && !event.entityPlayer.capabilities.isCreativeMode)
@@ -158,7 +171,7 @@ public class EventHandler
 
                     if(!event.entityPlayer.worldObj.isRemote)
                     {
-                        float chance = event.entityPlayer.getRNG().nextFloat();
+                        float chance = forestryCheck ? 0.0F : event.entityPlayer.getRNG().nextFloat(); //If forestryCheck, change = 0, bee will be added.
                         if(wolfData.getBoolean("IsSuperBeeDog") || wolfData.getBoolean(BARKABLE_STRING) && wolfData.getInteger(BEE_CHARGE_STRING) >= BeeBarker.config.maxBeeCharge)
                         {
                             wolf.playSound("mob.wolf.whine", 0.4F, (wolf.getRNG().nextFloat() - wolf.getRNG().nextFloat()) * 0.2F + 1F);

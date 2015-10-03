@@ -7,6 +7,7 @@ import me.ichun.mods.beebarker.common.packet.PacketBark;
 import me.ichun.mods.beebarker.common.packet.PacketKeyState;
 import me.ichun.mods.beebarker.common.packet.PacketSpawnParticles;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -42,6 +43,8 @@ public class BeeBarker
 
     public static Item itemBeeBarker;
 
+    public static boolean isForestryInstalled;
+
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event)
     {
@@ -58,6 +61,8 @@ public class BeeBarker
     public void onInit(FMLInitializationEvent event)
     {
         proxy.init();
+
+        isForestryInstalled = Loader.isModLoaded("Forestry");
     }
 
     @Mod.EventHandler
