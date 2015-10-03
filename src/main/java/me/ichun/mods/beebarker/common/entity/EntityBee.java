@@ -155,7 +155,7 @@ public class EntityBee extends Entity
             if(collidedEnt != null)
             {
                 boolean doNotHarm = false;
-                if(collidedEnt.getInventory().length >= 5)
+                if(collidedEnt.getInventory() != null && collidedEnt.getInventory().length >= 5)
                 {
                     doNotHarm = true;
                     for(int i = 1; i <= 5; i++)

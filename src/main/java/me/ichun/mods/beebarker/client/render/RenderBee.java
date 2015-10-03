@@ -1,6 +1,5 @@
 package me.ichun.mods.beebarker.client.render;
 
-import me.ichun.mods.beebarker.client.model.ModelBee;
 import me.ichun.mods.beebarker.common.entity.EntityBee;
 import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.client.Minecraft;
@@ -14,13 +13,14 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.relauncher.Side;
+import us.ichun.mods.ichunutil.client.model.ModelBee;
+import us.ichun.mods.ichunutil.client.patron.LayerPatronEffect;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 public class RenderBee extends Render
 {
     public ModelBase modelBee;
-    public final ResourceLocation txBee = new ResourceLocation("beebarker","textures/model/bee.png");
 
     public RenderBee()
     {
@@ -74,6 +74,6 @@ public class RenderBee extends Render
     @Override
     protected ResourceLocation getEntityTexture(Entity entity)
     {
-        return txBee;
+        return LayerPatronEffect.texBee;
     }
 }
