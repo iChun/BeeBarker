@@ -202,11 +202,14 @@ public class EventHandler
     @SubscribeEvent
     public void onLivingDrops(LivingDropsEvent event)
     {
-        for(int i = event.drops.size() - 1; i >= 0; i--)
+        if(!event.entityLiving.worldObj.isRemote)
         {
-            if(spawnWolfFromItem(event.drops.get(i), null))
+            for(int i = event.drops.size() - 1; i >= 0; i--)
             {
-                event.drops.remove(i);
+                if(spawnWolfFromItem(event.drops.get(i), null))
+                {
+                    event.drops.remove(i);
+                }
             }
         }
     }
@@ -214,9 +217,12 @@ public class EventHandler
     @SubscribeEvent
     public void onItemToss(ItemTossEvent event)
     {
-        if(spawnWolfFromItem(event.entityItem, event.player))
+        if(!event.player.worldObj.isRemote)
         {
-            event.setCanceled(true);
+            if(spawnWolfFromItem(event.entityItem, event.player))
+            {
+                event.setCanceled(true);
+            }
         }
     }
 

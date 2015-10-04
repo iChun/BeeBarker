@@ -29,7 +29,7 @@ import us.ichun.mods.ichunutil.common.iChunUtil;
 public class BeeBarker
 {
     public static final String MOD_NAME = "BeeBarker";
-    public static final String VERSION = iChunUtil.versionMC + ".0.0";
+    public static final String VERSION = iChunUtil.versionMC + ".0.1";
 
     @Mod.Instance(MOD_NAME)
     public static BeeBarker instance;
