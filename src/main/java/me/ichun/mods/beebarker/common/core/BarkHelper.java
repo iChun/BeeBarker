@@ -70,7 +70,6 @@ public class BarkHelper
         {
             living.worldObj.spawnEntityInWorld(new EntityBee(living.worldObj, living));
         }
-
         living.worldObj.playSoundAtEntity(living, "mob.wolf.bark", 0.4F, (living.worldObj.rand.nextFloat() - living.worldObj.rand.nextFloat()) * 0.2F + pitch);
     }
 

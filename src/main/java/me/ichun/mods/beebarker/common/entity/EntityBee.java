@@ -38,7 +38,7 @@ public class EntityBee extends Entity
         }
 
         Vec3 look = shooter.getLookVec();
-        Vec3 pos = renderedShooter.getPositionVector().addVector(look.xCoord * 1.3D - look.zCoord * (renderedShooter.width * 0.2D), look.yCoord * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.zCoord * 1.3D + look.xCoord * (renderedShooter.width * 0.2D));
+        Vec3 pos = shooter.getPositionVector().addVector(look.xCoord * 1.3D - look.zCoord * (renderedShooter.width * 0.2D), look.yCoord * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.zCoord * 1.3D + look.xCoord * (renderedShooter.width * 0.2D));
         double gausAmount = 0.02D;
         double d0 = rand.nextGaussian() * gausAmount;
         double d1 = rand.nextGaussian() * gausAmount;
