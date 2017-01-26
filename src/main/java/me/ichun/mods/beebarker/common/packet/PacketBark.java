@@ -3,13 +3,15 @@ package me.ichun.mods.beebarker.common.packet;
 import io.netty.buffer.ByteBuf;
 import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.core.BarkHelper;
-import me.ichun.mods.beebarker.common.core.EventHandler;
 import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
+import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
-import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 
 public class PacketBark extends AbstractPacket
 {
@@ -23,32 +25,38 @@ public class PacketBark extends AbstractPacket
     }
 
     @Override
-    public void writeTo(ByteBuf buffer, Side side)
+    public void writeTo(ByteBuf buffer)
     {
         buffer.writeBoolean(pressed);
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side)
+    public void readFrom(ByteBuf buffer)
     {
         pressed = buffer.readBoolean();
     }
 
     @Override
-    public void execute(Side side, EntityPlayer player)
+    public Side receivingSide()
+    {
+        return Side.SERVER;
+    }
+
+    @Override
+    public AbstractPacket execute(Side side, EntityPlayer player)
     {
         if(pressed)
         {
-            ItemStack is = player.getHeldItem();
+            ItemStack is = player.getHeldItem(EnumHand.MAIN_HAND);
             if(is != null && is.getItem() == BeeBarker.itemBeeBarker && is.getTagCompound() != null && is.getTagCompound().hasKey(ItemBeeBarker.WOLF_DATA_STRING))
             {
                 if(BeeBarker.config.easterEgg == 1 && ((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).hasKey("CustomName") && ((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).getString("CustomName").equals("iChun"))
                 {
-                    if(!BarkHelper.pressState.contains(player.getCommandSenderName()))
+                    if(!BarkHelper.pressState.contains(player.getName()))
                     {
-                        BarkHelper.pressState.add(player.getCommandSenderName());
-                        player.worldObj.playSoundAtEntity(player, "mob.wolf.growl", 0.4F, 1.0F);
-                        BeeBarker.channel.sendToAll(new PacketKeyState(player.getCommandSenderName(), true));
+                        BarkHelper.pressState.add(player.getName());
+                        player.worldObj.playSound(null, player.posX, player.posY + player.getEyeHeight(), player.posZ, SoundEvents.ENTITY_WOLF_GROWL, SoundCategory.PLAYERS, 0.4F, 1.0F);
+                        BeeBarker.channel.sendToAll(new PacketKeyState(player.getName(), true));
                     }
                 }
                 else
@@ -59,7 +67,8 @@ public class PacketBark extends AbstractPacket
         }
         else
         {
-            BarkHelper.removePressState(player.getCommandSenderName());
+            BarkHelper.removePressState(player.getName());
         }
+        return null;
     }
 }

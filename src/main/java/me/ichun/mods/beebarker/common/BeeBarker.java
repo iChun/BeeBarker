@@ -1,11 +1,16 @@
 package me.ichun.mods.beebarker.common;
 
+import me.ichun.mods.beebarker.client.core.EventHandlerClient;
 import me.ichun.mods.beebarker.common.core.BarkHelper;
-import me.ichun.mods.beebarker.common.core.CommonProxy;
 import me.ichun.mods.beebarker.common.core.Config;
+import me.ichun.mods.beebarker.common.core.ProxyCommon;
 import me.ichun.mods.beebarker.common.packet.PacketBark;
 import me.ichun.mods.beebarker.common.packet.PacketKeyState;
 import me.ichun.mods.beebarker.common.packet.PacketSpawnParticles;
+import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
+import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
+import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -13,29 +18,24 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
-import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
-import us.ichun.mods.ichunutil.common.core.network.PacketChannel;
-import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionChecker;
-import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionInfo;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 
-@Mod(modid = BeeBarker.MOD_NAME, name = BeeBarker.MOD_NAME,
+@Mod(modid = BeeBarker.MOD_ID, name = BeeBarker.MOD_NAME,
         version = BeeBarker.VERSION,
-        guiFactory = "us.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
-        dependencies = "required-after:iChunUtil@[" + iChunUtil.versionMC +".4.0," + (iChunUtil.versionMC + 1) + ".0.0)",
-        acceptableRemoteVersions = "[" + iChunUtil.versionMC +".0.0," + iChunUtil.versionMC + ".1.0)"
+        guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
+        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR +".2.0," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
+        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR +".0.0," + iChunUtil.VERSION_MAJOR + ".1.0)"
 )
 public class BeeBarker
 {
     public static final String MOD_NAME = "BeeBarker";
-    public static final String VERSION = iChunUtil.versionMC + ".0.1";
+    public static final String MOD_ID = "beebarker";
+    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".0.0";
 
-    @Mod.Instance(MOD_NAME)
+    @Mod.Instance(MOD_ID)
     public static BeeBarker instance;
 
-    @SidedProxy(clientSide = "me.ichun.mods.beebarker.client.core.ClientProxy", serverSide = "me.ichun.mods.beebarker.common.core.CommonProxy")
-    public static CommonProxy proxy;
+    @SidedProxy(clientSide = "me.ichun.mods.beebarker.client.core.ProxyClient", serverSide = "me.ichun.mods.beebarker.common.core.ProxyCommon")
+    public static ProxyCommon proxy;
 
     public static PacketChannel channel;
 
@@ -45,16 +45,18 @@ public class BeeBarker
 
     public static boolean isForestryInstalled;
 
+    public static EventHandlerClient eventHandlerClient;
+
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event)
     {
-        config = (Config)ConfigHandler.registerConfig(new Config(event.getSuggestedConfigurationFile()));
+        config = ConfigHandler.registerConfig(new Config(event.getSuggestedConfigurationFile()));
 
         proxy.preInit();
 
-        channel = ChannelHandler.getChannelHandlers(MOD_NAME, PacketBark.class, PacketSpawnParticles.class, PacketKeyState.class);
+        channel = new PacketChannel(MOD_NAME, PacketBark.class, PacketSpawnParticles.class, PacketKeyState.class);
 
-        ModVersionChecker.register_iChunMod(new ModVersionInfo(MOD_NAME, iChunUtil.versionOfMC, VERSION, false));
+        UpdateChecker.registerMod(new UpdateChecker.ModVersionInfo(MOD_NAME, iChunUtil.VERSION_OF_MC, VERSION, false));
     }
 
     @Mod.EventHandler

@@ -2,10 +2,10 @@ package me.ichun.mods.beebarker.common.packet;
 
 import io.netty.buffer.ByteBuf;
 import me.ichun.mods.beebarker.common.BeeBarker;
+import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
-import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 
 public class PacketKeyState extends AbstractPacket
 {
@@ -21,32 +21,39 @@ public class PacketKeyState extends AbstractPacket
     }
 
     @Override
-    public void writeTo(ByteBuf buffer, Side side)
+    public void writeTo(ByteBuf buffer)
     {
         ByteBufUtils.writeUTF8String(buffer, name);
         buffer.writeBoolean(add);
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side)
+    public void readFrom(ByteBuf buffer)
     {
         name = ByteBufUtils.readUTF8String(buffer);
         add = buffer.readBoolean();
     }
 
     @Override
-    public void execute(Side side, EntityPlayer player)
+    public AbstractPacket execute(Side side, EntityPlayer player)
     {
         if(add)
         {
-            if(!BeeBarker.proxy.tickHandlerClient.pressState.contains(name))
+            if(!BeeBarker.eventHandlerClient.pressState.contains(name))
             {
-                BeeBarker.proxy.tickHandlerClient.pressState.add(name);
+                BeeBarker.eventHandlerClient.pressState.add(name);
             }
         }
         else
         {
-            BeeBarker.proxy.tickHandlerClient.pressState.remove(name);
+            BeeBarker.eventHandlerClient.pressState.remove(name);
         }
+        return null;
+    }
+
+    @Override
+    public Side receivingSide()
+    {
+        return Side.CLIENT;
     }
 }

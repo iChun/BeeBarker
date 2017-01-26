@@ -1,10 +1,10 @@
 package me.ichun.mods.beebarker.common.core;
 
 import me.ichun.mods.beebarker.common.BeeBarker;
-import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
-import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
-import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
-import us.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
+import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
+import me.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
+import me.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 
 import java.io.File;
 

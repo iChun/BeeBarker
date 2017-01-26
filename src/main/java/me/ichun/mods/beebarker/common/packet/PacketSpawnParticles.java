@@ -1,20 +1,18 @@
 package me.ichun.mods.beebarker.common.packet;
 
 import io.netty.buffer.ByteBuf;
-import me.ichun.mods.beebarker.client.fx.EntityBuzzFX;
-import me.ichun.mods.beebarker.common.BeeBarker;
+import me.ichun.mods.beebarker.client.fx.ParticleBuzz;
 import me.ichun.mods.beebarker.common.core.EventHandler;
+import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 
 public class PacketSpawnParticles extends AbstractPacket
 {
@@ -32,7 +30,7 @@ public class PacketSpawnParticles extends AbstractPacket
     }
 
     @Override
-    public void writeTo(ByteBuf buffer, Side side)
+    public void writeTo(ByteBuf buffer)
     {
         buffer.writeInt(entityId);
         buffer.writeInt(playerId);
@@ -40,7 +38,7 @@ public class PacketSpawnParticles extends AbstractPacket
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side)
+    public void readFrom(ByteBuf buffer)
     {
         entityId = buffer.readInt();
         playerId = buffer.readInt();
@@ -48,9 +46,16 @@ public class PacketSpawnParticles extends AbstractPacket
     }
 
     @Override
-    public void execute(Side side, EntityPlayer player)
+    public AbstractPacket execute(Side side, EntityPlayer player)
     {
         handleClient();
+        return null;
+    }
+
+    @Override
+    public Side receivingSide()
+    {
+        return Side.CLIENT;
     }
 
     @SideOnly(Side.CLIENT)
@@ -67,8 +72,8 @@ public class PacketSpawnParticles extends AbstractPacket
                 double d0 = living.worldObj.rand.nextGaussian() * 0.02D;
                 double d1 = living.worldObj.rand.nextGaussian() * 0.02D;
                 double d2 = living.worldObj.rand.nextGaussian() * 0.02D;
-                Vec3 look = living.getLookVec();
-                Vec3 pos = living.getPositionVector().addVector(look.xCoord * 0.5D - look.zCoord * (living.width * 0.67D), look.yCoord * 0.5D + (living.getEyeHeight() * 0.8D), look.zCoord * 0.5D + look.xCoord * (living.width * 0.67D));
+                Vec3d look = living.getLookVec();
+                Vec3d pos = living.getPositionVector().addVector(look.xCoord * 0.5D - look.zCoord * (living.width * 0.67D), look.yCoord * 0.5D + (living.getEyeHeight() * 0.8D), look.zCoord * 0.5D + look.xCoord * (living.width * 0.67D));
                 living.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.xCoord, pos.yCoord, pos.zCoord, d0, d1, d2);
             }
         }
@@ -89,14 +94,14 @@ public class PacketSpawnParticles extends AbstractPacket
                     else
                     {
                         ent.getEntityData().setBoolean(EventHandler.BARKABLE_STRING, true);
-                        mc.effectRenderer.addEffect(new EntityBuzzFX(mc.theWorld, ent.posX + (double)(mc.theWorld.rand.nextFloat() * ent.width * 2.0F) - (double)ent.width, ent.posY + 0.5D + (double)(mc.theWorld.rand.nextFloat() * ent.height), ent.posZ + (double)(mc.theWorld.rand.nextFloat() * ent.width * 2.0F) - (double)ent.width, d0, d1, d2));
+                        mc.effectRenderer.addEffect(new ParticleBuzz(mc.theWorld, ent.posX + (double)(mc.theWorld.rand.nextFloat() * ent.width * 2.0F) - (double)ent.width, ent.posY + 0.5D + (double)(mc.theWorld.rand.nextFloat() * ent.height), ent.posZ + (double)(mc.theWorld.rand.nextFloat() * ent.width * 2.0F) - (double)ent.width, d0, d1, d2));
                     }
                 }
             }
             Entity ply = mc.theWorld.getEntityByID(playerId);
             if(ply instanceof EntityLivingBase)
             {
-                ((EntityLivingBase)ply).swingItem();
+                ((EntityLivingBase)ply).swingArm(EnumHand.MAIN_HAND);
             }
         }
     }

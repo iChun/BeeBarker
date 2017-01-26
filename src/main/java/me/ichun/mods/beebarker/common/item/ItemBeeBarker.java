@@ -3,6 +3,7 @@ package me.ichun.mods.beebarker.common.item;
 import me.ichun.mods.beebarker.client.render.ItemRenderBeeBarker;
 import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.core.EventHandler;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -10,26 +11,26 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.List;
 
 public class ItemBeeBarker extends Item
 {
-    @SideOnly(Side.CLIENT)
-    public ItemRenderBeeBarker renderer;
-
     public static final String WOLF_DATA_STRING = "WolfData";
 
     public ItemBeeBarker()
@@ -49,20 +50,20 @@ public class ItemBeeBarker extends Item
     {
         if(player.worldObj.isRemote)
         {
-            iChunUtil.proxy.tickHandlerClient.nudgeHand(-50F);
+            iChunUtil.proxy.nudgeHand(-50F);
         }
-        player.worldObj.playSoundAtEntity(player, "random.eat", 0.6F, (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.2F + 1F);
+        player.worldObj.playSound(null, entity.posX, entity.posY + player.getEyeHeight(), entity.posZ, SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.NEUTRAL, 0.6F, (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.2F + 1F);
         return false;
     }
 
     @Override
-    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
     {
-        return true;
+        return EnumActionResult.FAIL; // Return PASS to allow vanilla handling, any other to skip normal code.
     }
 
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target)
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target, EnumHand hand)
     {
         return true;
     }
@@ -73,7 +74,7 @@ public class ItemBeeBarker extends Item
     {
         Minecraft mc = Minecraft.getMinecraft();
         EntityWolf wolf = (EntityWolf)EntityList.createEntityByName("Wolf", mc.theWorld);
-        wolf.setOwnerId(mc.thePlayer.getUniqueID().toString());
+        wolf.setOwnerId(mc.thePlayer.getUniqueID());
         wolf.setTamed(true);
         wolf.setHealth(20.0F);
         wolf.getEntityData().setBoolean(EventHandler.BARKABLE_STRING, true);
@@ -109,15 +110,15 @@ public class ItemBeeBarker extends Item
             {
                 if(((NBTTagCompound)is.getTagCompound().getTag(WOLF_DATA_STRING)).getString("CustomName").equals("iChun") && BeeBarker.config.easterEgg == 1)
                 {
-                    list.add(StatCollector.translateToLocal("beebarker.easteregg.item"));
+                    list.add(I18n.translateToLocal("beebarker.easteregg.item"));
                 }
                 list.add(((NBTTagCompound)is.getTagCompound().getTag(WOLF_DATA_STRING)).getString("CustomName"));
             }
             StringBuilder sb = new StringBuilder();
-            sb.append(StatCollector.translateToLocal("beebarker.beeCharge")).append(": ");
+            sb.append(I18n.translateToLocal("beebarker.beeCharge")).append(": ");
             if(is.getItemDamage() == 0)
             {
-                sb.append(StatCollector.translateToLocal("beebarker.beeCharge.unlimited"));
+                sb.append(I18n.translateToLocal("beebarker.beeCharge.unlimited"));
             }
             else
             {
@@ -131,13 +132,5 @@ public class ItemBeeBarker extends Item
     public EnumAction getItemUseAction(ItemStack par1ItemStack)
     {
         return EnumAction.BOW;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public net.minecraft.client.resources.model.ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining)
-    {
-        renderer.lastPlayer = player;
-        return super.getModel(stack, player, useRemaining);
     }
 }

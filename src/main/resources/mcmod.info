@@ -1,0 +1,20 @@
+[
+{
+  "modid" : "beebarker",
+  "name" : "BeeBarker",
+  "version" : "${version}",
+  "url" : "http://ichun.me/mods/bee-barker/",
+  "credits" : "",
+  "authorList": [
+    "iChun"
+  ],
+  "description": "Oh yeah, what are you gonna do? Release the dogs? Or the bees? Or the dogs with bees in their mouth and when they bark they shoot bees at you?",
+  "updateUrl" : "",
+  "parent" : "",
+  "screenshots": [
+  ],
+  "dependencies": [
+    "Forge", "iChunUtil"
+  ]
+}
+]
