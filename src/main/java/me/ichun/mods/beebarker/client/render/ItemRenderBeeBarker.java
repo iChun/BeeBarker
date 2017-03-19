@@ -12,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.ModelWolf;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -39,14 +40,14 @@ import javax.vecmath.Matrix4f;
 public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
 {
     public static final ItemCameraTransforms itemCameraTransforms = new ItemCameraTransforms(
-            new ItemTransformVec3f(new Vector3f(90F, 180F, 0F), new Vector3f(0.04F, 0.4F, -0.44F), new Vector3f(0.95F, 0.95F, 0.95F)), //tp left
-            new ItemTransformVec3f(new Vector3f(90F, 180F, 0F), new Vector3f(0.04F, 0.4F, -0.44F), new Vector3f(0.95F, 0.95F, 0.95F)), //tp right
-            new ItemTransformVec3f(new Vector3f(5F, -40F, 2F), new Vector3f(-0.3F, 0.775F, -0.025F), new Vector3f(1F, 1F, 0.8F)), //fp left
-            new ItemTransformVec3f(new Vector3f(5F, -40F, 2F), new Vector3f(-0.3F, 0.775F, -0.025F), new Vector3f(1F, 1F, 0.8F)), //fp right
+            new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(0.05F, 0.7F, -0.64F), new Vector3f(0.95F, 0.95F, 0.95F)), //tp left
+            new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(-0.08F, 0.7F, -0.64F), new Vector3f(0.95F, 0.95F, 0.95F)), //tp right
+            new ItemTransformVec3f(new Vector3f(5F, 5F, 2F), new Vector3f(0.2F, 0.775F, -0.7525F), new Vector3f(1F, 1F, 0.8F)), //fp left
+            new ItemTransformVec3f(new Vector3f(5F, 5F, 2F), new Vector3f(0.2F, 0.775F, -0.7525F), new Vector3f(1F, 1F, 0.8F)), //fp right
             new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0.4F, 0F), new Vector3f(1F, 1F, 1F)), //head
-            new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(-0.05F, 0.4F, -0.05F), new Vector3f(1F, 1F, 1F)), //gui
-            new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(-0.05F, 0.4F, -0.05F), new Vector3f(1F, 1F, 1F)), //ground
-            new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(-0.05F, 0.4F, -0.05F), new Vector3f(1F, 1F, 1F)) //fixed
+            new ItemTransformVec3f(new Vector3f(25F, 212.5F, 0F), new Vector3f(0.075F, 0.6F, -0.05F), new Vector3f(0.7F, 0.7F, 0.7F)), //gui
+            new ItemTransformVec3f(new Vector3f(25F, 212.5F, 0F), new Vector3f(0.075F, 0.6F, -0.05F), new Vector3f(0.7F, 0.7F, 0.7F)), //ground
+            new ItemTransformVec3f(new Vector3f(25F, 212.5F, 0F), new Vector3f(0.075F, 0.6F, -0.05F), new Vector3f(0.7F, 0.7F, 0.7F)) //fixed
     );
 
     //Stuff to do in relation to getting the current perspective and the current player holding it
@@ -59,7 +60,40 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
 
     public ItemRenderBeeBarker()
     {
-        modelWolf = new ModelWolf();
+        modelWolf = new ModelWolf()
+        {
+            {
+                float f = 0.0F;
+                float f1 = 13.5F;
+                this.wolfHeadMain = new ModelRenderer(this, 0, 0);
+                this.wolfHeadMain.addBox(-3.0F, -3.0F, -2.0F, 6, 6, 4, f);
+                this.wolfHeadMain.setRotationPoint(-1.0F, f1, -7.0F);
+                this.wolfBody = new ModelRenderer(this, 18, 14);
+                this.wolfBody.addBox(-4.0F, -2.0F, -3.0F, 6, 9, 6, f);
+                this.wolfBody.setRotationPoint(0.0F, 14.0F, 2.0F);
+                this.wolfMane = new ModelRenderer(this, 21, 0);
+                this.wolfMane.addBox(-4.0F, -3.0F, -3.0F, 8, 6, 7, f);
+                this.wolfMane.setRotationPoint(-1.0F, 14.0F, 2.0F);
+                this.wolfLeg1 = new ModelRenderer(this, 0, 18);
+                this.wolfLeg1.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, f);
+                this.wolfLeg1.setRotationPoint(-2.5F, 16.0F, 7.0F);
+                this.wolfLeg2 = new ModelRenderer(this, 0, 18);
+                this.wolfLeg2.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, f);
+                this.wolfLeg2.setRotationPoint(0.5F, 16.0F, 7.0F);
+                this.wolfLeg3 = new ModelRenderer(this, 0, 18);
+                this.wolfLeg3.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, f);
+                this.wolfLeg3.setRotationPoint(-2.5F, 16.0F, -4.0F);
+                this.wolfLeg4 = new ModelRenderer(this, 0, 18);
+                this.wolfLeg4.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, f);
+                this.wolfLeg4.setRotationPoint(0.5F, 16.0F, -4.0F);
+                this.wolfTail = new ModelRenderer(this, 9, 18);
+                this.wolfTail.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, f);
+                this.wolfTail.setRotationPoint(-1.0F, 12.0F, 8.0F);
+                this.wolfHeadMain.setTextureOffset(16, 14).addBox(-3.0F, -5.0F, 0.0F, 2, 2, 1, f);
+                this.wolfHeadMain.setTextureOffset(16, 14).addBox(1.0F, -5.0F, 0.0F, 2, 2, 1, f);
+                this.wolfHeadMain.setTextureOffset(0, 10).addBox(-1.5F, 0.0F, -5.0F, 3, 3, 4, f);
+            }
+        };
         modelWolf.isChild = false;
         modelWolf.wolfBody.setRotationPoint(0.0F, 14.0F, 2.0F);
         modelWolf.wolfBody.rotateAngleX = ((float)Math.PI / 2F);
@@ -89,6 +123,7 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
         modelWolf.wolfLeg4.rotateAngleZ = modelWolf.wolfLeg4.rotateAngleX = 0.0F;
         modelWolf.wolfTail.rotateAngleZ = (float)Math.toRadians(84.5F);
         modelWolf.wolfHeadMain.rotateAngleX = modelWolf.wolfHeadMain.rotateAngleY = 0.0F;
+        modelWolf.wolfTail.rotateAngleX = (float)Math.toRadians(200F);
 
         GlStateManager.pushMatrix();
 
@@ -129,6 +164,7 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
                     pitch += EntityHelper.interpolateRotation(BeeBarker.eventHandlerClient.prevPitch, BeeBarker.eventHandlerClient.currentPitch, renderTick);
                 }
             }
+
             modelWolf.render(null, 0.0F, 0.0F, 0.0F, yaw, pitch, 0.0625F);
         }
         else if(isItemRender)
@@ -151,23 +187,48 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
                 mc.getTextureManager().bindTexture(((AbstractClientPlayer)lastPlayer).getLocationSkin());
                 RenderPlayer renderPlayer = (RenderPlayer)render;
 
-                GlStateManager.pushMatrix();
-                GlStateManager.rotate(70F, 0F, 1F, 0F);
-                GlStateManager.rotate(-100F, 1F, 0F, 0F);
-                GlStateManager.translate(-0.55F, -1.0F, 1.125F);
-                renderPlayer.renderLeftArm((AbstractClientPlayer)lastPlayer);
-                GlStateManager.popMatrix();
+                if(PerspectiveAwareModelBaseWrapper.isLeftHand(currentPerspective))
+                {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.rotate(-70F, 0F, 1F, 0F);
+                    GlStateManager.rotate(-100F, 1F, 0F, 0F);
+                    GlStateManager.translate(0.35F, -1.0F, 1.225F);
+                    renderPlayer.renderRightArm((AbstractClientPlayer)lastPlayer);
+                    GlStateManager.popMatrix();
 
-                GlStateManager.pushMatrix();
-                GlStateManager.scale(0.9F, 0.9F, 0.9F);
-                GlStateManager.rotate(-4F, 0F, 1F, 0F);
-                GlStateManager.rotate(-75F, 1F, 0F, 0F);
+                    GlStateManager.pushMatrix();
+                    GlStateManager.scale(0.9F, 0.9F, 0.9F);
+                    GlStateManager.rotate(-4F, 0F, 1F, 0F);
+                    GlStateManager.rotate(-75F, 1F, 0F, 0F);
 
-                float yOffset = -0.2F * curveProg;
-                float zOffset = 0.025F * curveProg;
-                GlStateManager.translate(0.4F, -1.2F + yOffset, 1.175F + zOffset);
-                renderPlayer.renderRightArm((AbstractClientPlayer)lastPlayer);
-                GlStateManager.popMatrix();
+                    float yOffset = -0.2F * curveProg;
+                    float zOffset = 0.025F * curveProg;
+                    GlStateManager.translate(-0.4F, -1.25F + yOffset, 1.275F + zOffset);
+                    GlStateManager.rotate(-17F, 1F, 0F, 0F);
+                    renderPlayer.renderLeftArm((AbstractClientPlayer)lastPlayer);
+                    GlStateManager.popMatrix();
+                }
+                else
+                {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.rotate(70F, 0F, 1F, 0F);
+                    GlStateManager.rotate(-100F, 1F, 0F, 0F);
+                    GlStateManager.translate(-0.55F, -1.0F, 1.125F);
+                    renderPlayer.renderLeftArm((AbstractClientPlayer)lastPlayer);
+                    GlStateManager.popMatrix();
+
+                    GlStateManager.pushMatrix();
+                    GlStateManager.scale(0.9F, 0.9F, 0.9F);
+                    GlStateManager.rotate(-4F, 0F, 1F, 0F);
+                    GlStateManager.rotate(-75F, 1F, 0F, 0F);
+
+                    float yOffset = -0.2F * curveProg;
+                    float zOffset = 0.025F * curveProg;
+                    GlStateManager.translate(0.4F, -1.25F + yOffset, 1.275F + zOffset);
+                    GlStateManager.rotate(-17F, 1F, 0F, 0F);
+                    renderPlayer.renderRightArm((AbstractClientPlayer)lastPlayer);
+                    GlStateManager.popMatrix();
+                }
             }
         }
 
@@ -191,16 +252,7 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
     @Override
     public ItemCameraTransforms getCameraTransforms()
     {
-        return new ItemCameraTransforms(
-                new ItemTransformVec3f(new Vector3f(90F, 180F, 0F), new Vector3f(0.04F, 0.4F, -0.44F), new Vector3f(0.95F, 0.95F, 0.95F)), //tp left
-                new ItemTransformVec3f(new Vector3f(90F, 180F, 0F), new Vector3f(0.04F, 0.4F, -0.44F), new Vector3f(0.95F, 0.95F, 0.95F)), //tp right
-                new ItemTransformVec3f(new Vector3f(5F, -40F, 2F), new Vector3f(-0.3F, 0.775F, -0.025F), new Vector3f(1F, 1F, 0.8F)), //fp left
-                new ItemTransformVec3f(new Vector3f(5F, -40F, 2F), new Vector3f(-0.3F, 0.775F, -0.025F), new Vector3f(1F, 1F, 0.8F)), //fp right
-                new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0.4F, 0F), new Vector3f(1F, 1F, 1F)), //head
-                new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(-0.05F, 0.4F, -0.05F), new Vector3f(1F, 1F, 1F)), //gui
-                new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(-0.05F, 0.4F, -0.05F), new Vector3f(1F, 1F, 1F)), //ground
-                new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(-0.05F, 0.4F, -0.05F), new Vector3f(1F, 1F, 1F)) //fixed
-        );
+        return itemCameraTransforms;
     }
 
     @Override

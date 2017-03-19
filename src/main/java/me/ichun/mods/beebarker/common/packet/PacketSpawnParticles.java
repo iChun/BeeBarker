@@ -2,7 +2,7 @@ package me.ichun.mods.beebarker.common.packet;
 
 import io.netty.buffer.ByteBuf;
 import me.ichun.mods.beebarker.client.fx.ParticleBuzz;
-import me.ichun.mods.beebarker.common.core.EventHandler;
+import me.ichun.mods.beebarker.common.core.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -93,7 +93,7 @@ public class PacketSpawnParticles extends AbstractPacket
                     }
                     else
                     {
-                        ent.getEntityData().setBoolean(EventHandler.BARKABLE_STRING, true);
+                        ent.getEntityData().setBoolean(EventHandlerServer.BARKABLE_STRING, true);
                         mc.effectRenderer.addEffect(new ParticleBuzz(mc.theWorld, ent.posX + (double)(mc.theWorld.rand.nextFloat() * ent.width * 2.0F) - (double)ent.width, ent.posY + 0.5D + (double)(mc.theWorld.rand.nextFloat() * ent.height), ent.posZ + (double)(mc.theWorld.rand.nextFloat() * ent.width * 2.0F) - (double)ent.width, d0, d1, d2));
                     }
                 }

@@ -55,13 +55,13 @@ public class BarkHelper
 
                 if(!tag.getBoolean("IsSuperBeeDog"))
                 {
-                    if(tag.getInteger(EventHandler.BEE_CHARGE_STRING) <= 0)
+                    if(tag.getInteger(EventHandlerServer.BEE_CHARGE_STRING) <= 0)
                     {
-                        living.worldObj.playSound(null, living.posX, living.posY + living.getEyeHeight(), ((EntityPlayer)living).posZ, SoundEvents.ENTITY_WOLF_HURT, SoundCategory.PLAYERS, 0.4F, (living.worldObj.rand.nextFloat() - living.worldObj.rand.nextFloat()) * 0.2F + pitch);
+                        EntityHelper.playSoundAtEntity(living, SoundEvents.ENTITY_WOLF_HURT, SoundCategory.PLAYERS, 0.4F, (living.worldObj.rand.nextFloat() - living.worldObj.rand.nextFloat()) * 0.2F + pitch);
                         return;
                     }
-                    tag.setInteger(EventHandler.BEE_CHARGE_STRING, tag.getInteger(EventHandler.BEE_CHARGE_STRING) - 1);
-                    is.setItemDamage(1 + (int)((1.0F - (tag.getInteger(EventHandler.BEE_CHARGE_STRING) / (float)tag.getInteger(EventHandler.BEE_HIGHEST_CHARGE))) * 250F));
+                    tag.setInteger(EventHandlerServer.BEE_CHARGE_STRING, tag.getInteger(EventHandlerServer.BEE_CHARGE_STRING) - 1);
+                    is.setItemDamage(1 + (int)((1.0F - (tag.getInteger(EventHandlerServer.BEE_CHARGE_STRING) / (float)tag.getInteger(EventHandlerServer.BEE_HIGHEST_CHARGE))) * 250F));
                 }
             }
         }
@@ -73,7 +73,7 @@ public class BarkHelper
         {
             living.worldObj.spawnEntityInWorld(new EntityBee(living.worldObj, living));
         }
-        living.worldObj.playSound(null, living.posX, living.posY + living.getEyeHeight(), ((EntityPlayer)living).posZ, SoundEvents.ENTITY_WOLF_AMBIENT, SoundCategory.PLAYERS, 0.4F, (living.worldObj.rand.nextFloat() - living.worldObj.rand.nextFloat()) * 0.2F + pitch);
+        EntityHelper.playSoundAtEntity(living, SoundEvents.ENTITY_WOLF_AMBIENT, SoundCategory.PLAYERS, 0.4F, (living.worldObj.rand.nextFloat() - living.worldObj.rand.nextFloat()) * 0.2F + pitch);
     }
 
     @SubscribeEvent
@@ -122,7 +122,7 @@ public class BarkHelper
                         }
                         if(player.ticksExisted % 13 == 0)
                         {
-                            player.worldObj.playSound(null, player.posX, player.posY + player.getEyeHeight(), player.posZ, SoundEvents.ENTITY_WOLF_PANT, SoundCategory.PLAYERS, 0.6F, 1F);
+                            EntityHelper.playSoundAtEntity(player, SoundEvents.ENTITY_WOLF_PANT, SoundCategory.PLAYERS, 0.6F, 1F);
                         }
                     }
                     else

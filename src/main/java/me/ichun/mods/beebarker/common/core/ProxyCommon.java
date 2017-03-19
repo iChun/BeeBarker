@@ -15,7 +15,7 @@ public class ProxyCommon
     {
         BeeBarker.itemBeeBarker = GameRegistry.register((new ItemBeeBarker()).setFull3D().setRegistryName(new ResourceLocation("beebarker", "bee_barker")).setUnlocalizedName("beebarker.bee_barker").setCreativeTab(CreativeTabs.TOOLS));
 
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(new EventHandlerServer());
     }
 
     public void init()

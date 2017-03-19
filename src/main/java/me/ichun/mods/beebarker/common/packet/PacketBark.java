@@ -5,6 +5,7 @@ import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.core.BarkHelper;
 import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
 import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -55,7 +56,7 @@ public class PacketBark extends AbstractPacket
                     if(!BarkHelper.pressState.contains(player.getName()))
                     {
                         BarkHelper.pressState.add(player.getName());
-                        player.worldObj.playSound(null, player.posX, player.posY + player.getEyeHeight(), player.posZ, SoundEvents.ENTITY_WOLF_GROWL, SoundCategory.PLAYERS, 0.4F, 1.0F);
+                        EntityHelper.playSoundAtEntity(player, SoundEvents.ENTITY_WOLF_GROWL, SoundCategory.PLAYERS, 0.4F, 1.0F);
                         BeeBarker.channel.sendToAll(new PacketKeyState(player.getName(), true));
                     }
                 }

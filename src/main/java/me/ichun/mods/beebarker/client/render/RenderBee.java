@@ -4,10 +4,12 @@ import me.ichun.mods.beebarker.common.entity.EntityBee;
 import me.ichun.mods.ichunutil.client.model.ModelBee;
 import me.ichun.mods.ichunutil.client.module.patron.LayerPatronEffect;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelPig;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -21,7 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class RenderBee extends Render<EntityBee>
 {
-    public ModelBase modelBee;
+    public ModelBee modelBee;
 
     public RenderBee(RenderManager manager)
     {
@@ -63,7 +65,7 @@ public class RenderBee extends Render<EntityBee>
         GlStateManager.scale(scale, scale, scale);
         this.bindEntityTexture(bee);
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
-        this.modelBee.render(bee, 0.0F, 0.0F, 0F, 0.0F, 0.0F, 0.0625F);
+        modelBee.render(0.0625F);
         GlStateManager.popMatrix();
     }
 

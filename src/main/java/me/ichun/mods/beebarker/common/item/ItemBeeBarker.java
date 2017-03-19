@@ -1,8 +1,8 @@
 package me.ichun.mods.beebarker.common.item;
 
-import me.ichun.mods.beebarker.client.render.ItemRenderBeeBarker;
 import me.ichun.mods.beebarker.common.BeeBarker;
-import me.ichun.mods.beebarker.common.core.EventHandler;
+import me.ichun.mods.beebarker.common.core.EventHandlerServer;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
@@ -52,7 +52,7 @@ public class ItemBeeBarker extends Item
         {
             iChunUtil.proxy.nudgeHand(-50F);
         }
-        player.worldObj.playSound(null, entity.posX, entity.posY + player.getEyeHeight(), entity.posZ, SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.NEUTRAL, 0.6F, (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.2F + 1F);
+        EntityHelper.playSoundAtEntity(entity, SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.NEUTRAL, 0.6F, (entity.worldObj.rand.nextFloat() - entity.worldObj.rand.nextFloat()) * 0.2F + 1F);
         return false;
     }
 
@@ -77,7 +77,7 @@ public class ItemBeeBarker extends Item
         wolf.setOwnerId(mc.thePlayer.getUniqueID());
         wolf.setTamed(true);
         wolf.setHealth(20.0F);
-        wolf.getEntityData().setBoolean(EventHandler.BARKABLE_STRING, true);
+        wolf.getEntityData().setBoolean(EventHandlerServer.BARKABLE_STRING, true);
         wolf.getEntityData().setBoolean("IsSuperBeeDog", true);
 
         NBTTagCompound wolfTag = new NBTTagCompound();
@@ -122,7 +122,7 @@ public class ItemBeeBarker extends Item
             }
             else
             {
-                sb.append(((NBTTagCompound)((NBTTagCompound)is.getTagCompound().getTag(WOLF_DATA_STRING)).getTag("ForgeData")).getInteger(EventHandler.BEE_CHARGE_STRING));
+                sb.append(((NBTTagCompound)((NBTTagCompound)is.getTagCompound().getTag(WOLF_DATA_STRING)).getTag("ForgeData")).getInteger(EventHandlerServer.BEE_CHARGE_STRING));
             }
             list.add(sb.toString());
         }
@@ -132,5 +132,11 @@ public class ItemBeeBarker extends Item
     public EnumAction getItemUseAction(ItemStack par1ItemStack)
     {
         return EnumAction.BOW;
+    }
+
+    @Override
+    public int getMaxItemUseDuration(ItemStack stack)
+    {
+        return Integer.MAX_VALUE;
     }
 }

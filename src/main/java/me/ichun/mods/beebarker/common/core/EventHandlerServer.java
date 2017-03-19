@@ -25,7 +25,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-public class EventHandler
+public class EventHandlerServer
 {
     public static final String BARKABLE_STRING = "BeeBarker_barkable";
     public static final String BEE_HIGHEST_CHARGE = "BeeBarker_beeHighestCharge";
