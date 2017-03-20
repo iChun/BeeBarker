@@ -6,6 +6,7 @@ import me.ichun.mods.beebarker.common.core.BarkHelper;
 import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
 import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.item.ItemHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,7 @@ public class PacketBark extends AbstractPacket
     {
         if(pressed)
         {
-            ItemStack is = player.getHeldItem(EnumHand.MAIN_HAND);
+            ItemStack is = ItemHandler.getUsableDualHandedItem(player);
             if(is != null && is.getItem() == BeeBarker.itemBeeBarker && is.getTagCompound() != null && is.getTagCompound().hasKey(ItemBeeBarker.WOLF_DATA_STRING))
             {
                 if(BeeBarker.config.easterEgg == 1 && ((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).hasKey("CustomName") && ((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).getString("CustomName").equals("iChun"))

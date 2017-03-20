@@ -3,8 +3,8 @@ package me.ichun.mods.beebarker.client.render;
 import me.ichun.mods.beebarker.client.core.EventHandlerClient;
 import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
-import me.ichun.mods.ichunutil.client.model.item.IPerspectiveAwareModelBase;
-import me.ichun.mods.ichunutil.client.model.item.PerspectiveAwareModelBaseWrapper;
+import me.ichun.mods.ichunutil.client.model.item.IModelBase;
+import me.ichun.mods.ichunutil.client.model.item.ModelBaseWrapper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 
 @SuppressWarnings("deprecation")
-public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
+public class ItemRenderBeeBarker implements IModelBase
 {
     public static final ItemCameraTransforms itemCameraTransforms = new ItemCameraTransforms(
             new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(0.05F, 0.7F, -0.64F), new Vector3f(0.95F, 0.95F, 0.95F)), //tp left
@@ -129,8 +129,8 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
 
         Minecraft mc = Minecraft.getMinecraft();
 
-        boolean isItemRender = PerspectiveAwareModelBaseWrapper.isItemRender(currentPerspective) || currentPerspective == ItemCameraTransforms.TransformType.GUI;
-        boolean isFirstPerson = PerspectiveAwareModelBaseWrapper.isFirstPerson(currentPerspective) && lastPlayer == mc.thePlayer;
+        boolean isItemRender = ModelBaseWrapper.isItemRender(currentPerspective) || currentPerspective == ItemCameraTransforms.TransformType.GUI;
+        boolean isFirstPerson = ModelBaseWrapper.isFirstPerson(currentPerspective) && lastPlayer == mc.thePlayer;
 
         float pullTime = ((EventHandlerClient.PULL_TIME - BeeBarker.eventHandlerClient.pullTime) + renderTick);
         if(isFirstPerson && BeeBarker.eventHandlerClient.pressState.contains(mc.thePlayer.getName()) && BeeBarker.eventHandlerClient.pullTime == 7)
@@ -140,7 +140,7 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
 
         float curveProg = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((float)Math.pow((pullTime / EventHandlerClient.PULL_TIME), 0.5D), 0.0F, 1.0F) * 180F));
 
-        if(PerspectiveAwareModelBaseWrapper.isEntityRender(currentPerspective))
+        if(ModelBaseWrapper.isEntityRender(currentPerspective))
         {
             int ticks = iChunUtil.eventHandlerClient.ticks;
             modelWolf.wolfLeg1.rotateAngleZ += MathHelper.cos(ticks * 0.09F) * 0.025F;
@@ -187,7 +187,7 @@ public class ItemRenderBeeBarker implements IPerspectiveAwareModelBase
                 mc.getTextureManager().bindTexture(((AbstractClientPlayer)lastPlayer).getLocationSkin());
                 RenderPlayer renderPlayer = (RenderPlayer)render;
 
-                if(PerspectiveAwareModelBaseWrapper.isLeftHand(currentPerspective))
+                if(ModelBaseWrapper.isLeftHand(currentPerspective))
                 {
                     GlStateManager.pushMatrix();
                     GlStateManager.rotate(-70F, 0F, 1F, 0F);

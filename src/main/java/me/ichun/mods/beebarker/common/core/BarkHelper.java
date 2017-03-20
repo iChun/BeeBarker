@@ -6,6 +6,7 @@ import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
 import me.ichun.mods.beebarker.common.packet.PacketKeyState;
 import me.ichun.mods.beebarker.common.packet.PacketSpawnParticles;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.item.ItemHandler;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -48,7 +49,7 @@ public class BarkHelper
             }
 
             EntityPlayer player = (EntityPlayer)living;
-            ItemStack is = player.getHeldItem(EnumHand.MAIN_HAND);
+            ItemStack is = ItemHandler.getUsableDualHandedItem(player);
             if(is != null && is.getItem() instanceof ItemBeeBarker && is.getTagCompound() != null && is.getTagCompound().hasKey(ItemBeeBarker.WOLF_DATA_STRING) && !player.capabilities.isCreativeMode)
             {
                 NBTTagCompound tag = (NBTTagCompound)((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).getTag("ForgeData");
@@ -108,7 +109,7 @@ public class BarkHelper
                 EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(name);
                 if(player != null)
                 {
-                    ItemStack is = player.getHeldItem(EnumHand.MAIN_HAND);
+                    ItemStack is = ItemHandler.getUsableDualHandedItem(player);
                     if(is != null && is.getItem() == BeeBarker.itemBeeBarker && is.getTagCompound() != null && is.getTagCompound().hasKey(ItemBeeBarker.WOLF_DATA_STRING) && BeeBarker.config.easterEgg == 1 && ((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).hasKey("CustomName") && ((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).getString("CustomName").equals("iChun"))
                     {
                         if(player.ticksExisted % 4 == 0)

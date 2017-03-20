@@ -5,12 +5,14 @@ import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
 import me.ichun.mods.beebarker.common.packet.PacketBark;
 import me.ichun.mods.ichunutil.client.keybind.KeyEvent;
-import me.ichun.mods.ichunutil.client.model.item.PerspectiveAwareModelBaseWrapper;
+import me.ichun.mods.ichunutil.client.model.item.ModelBaseWrapper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.item.ItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -25,7 +27,7 @@ public class EventHandlerClient
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event)
     {
-        event.getModelRegistry().putObject(new ModelResourceLocation("beebarker:bee_barker", "inventory"), new PerspectiveAwareModelBaseWrapper(new ItemRenderBeeBarker()));
+        event.getModelRegistry().putObject(new ModelResourceLocation("beebarker:bee_barker", "inventory"), new ModelBaseWrapper(new ItemRenderBeeBarker()).setItemDualHanded());
     }
 
     @SubscribeEvent
@@ -34,7 +36,7 @@ public class EventHandlerClient
         Minecraft mc = Minecraft.getMinecraft();
         if(mc.currentScreen == null && !iChunUtil.eventHandlerClient.hasScreen)
         {
-            ItemStack currentInv = mc.thePlayer.inventory.getCurrentItem();
+            ItemStack currentInv = ItemHandler.getUsableDualHandedItem(mc.thePlayer);
             if(currentInv != null && currentInv.getItem() instanceof ItemBeeBarker)
             {
                 if(event.keyBind.isMinecraftBind() && event.keyBind.keyIndex == mc.gameSettings.keyBindUseItem.getKeyCode())
@@ -93,13 +95,30 @@ public class EventHandlerClient
         {
             Vec3d look = event.player.getLookVec();
             Vec3d pos;
+            EnumHandSide side = ItemHandler.getHandSide(event.player, ItemHandler.getUsableDualHandedItem(event.player));
             if(event.player == Minecraft.getMinecraft().getRenderViewEntity() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) //is first person
             {
-                pos = event.player.getPositionVector().addVector(look.xCoord * 1.5D - look.zCoord * 0.75D, look.yCoord * 1.5D + 1.15D, look.zCoord * 1.5D + look.xCoord * 0.75D);
+                double d = - look.zCoord * 0.75D;
+                double d1 = look.yCoord * 1.5D + 1.15D;
+                double d2 = + look.xCoord * 0.75D;
+                if(side == EnumHandSide.LEFT)
+                {
+                    d = -d;
+                    d2 = -d2;
+                }
+                pos = event.player.getPositionVector().addVector(look.xCoord * 1.5D + d, d1, look.zCoord * 1.5D + d2);
             }
             else
             {
-                pos = event.player.getPositionVector().addVector(look.xCoord * 1.5D - look.zCoord * (event.player.width * 0.2D), look.yCoord * 1.5D + (event.player.getEyeHeight() * 0.8D), look.zCoord * 1.5D + look.xCoord * (event.player.width * 0.2D));
+                double d = - look.zCoord * (event.player.width * 0.2D);
+                double d1 = look.yCoord * 1.5D + (event.player.getEyeHeight() * 0.8D);
+                double d2 = + look.xCoord * (event.player.width * 0.2D);
+                if(side == EnumHandSide.LEFT)
+                {
+                    d = -d;
+                    d2 = -d2;
+                }
+                pos = event.player.getPositionVector().addVector(look.xCoord * 1.5D + d, d1, look.zCoord * 1.5D + d2);
             }
             for(int i = 0; i < 4; i++)
             {

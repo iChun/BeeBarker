@@ -4,6 +4,7 @@ import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.entity.EntityBee;
 import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
 import me.ichun.mods.beebarker.common.packet.PacketSpawnParticles;
+import me.ichun.mods.ichunutil.common.item.ItemHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.entity.Entity;
@@ -34,7 +35,8 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event)
     {
-        if(event.getPlayer().getHeldItem(EnumHand.MAIN_HAND) != null && event.getPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemBeeBarker)
+        ItemStack is = ItemHandler.getUsableDualHandedItem(event.getPlayer());
+        if(is != null && is.getItem() instanceof ItemBeeBarker)
         {
             event.setCanceled(true);
         }

@@ -68,6 +68,12 @@ public class ItemBeeBarker extends Item
         return true;
     }
 
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+    {
+        return slotChanged || !ItemStack.areItemStacksEqual(oldStack, newStack);
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List itemList)

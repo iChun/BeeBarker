@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.client.module.patron.LayerPatronEffect;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.item.ItemHandler;
 import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -53,9 +54,23 @@ public class RenderBee extends Render<EntityBee>
             Vec3d posFP = renderedShooter.getPositionVector().addVector(look.xCoord * 1.3D - look.zCoord * 0.75D, look.yCoord * 1.3D + 1.15D, look.zCoord * 1.5D + look.xCoord * 0.75D);
             Vec3d offset = posTP.subtract(posFP);
             float prog = 1F - MathHelper.clamp_float((bee.ticksExisted + f1) / 10F, 0F, 1F);
-            offX = offset.xCoord * prog;
             offY = offset.yCoord * prog;
-            offZ = offset.zCoord * prog;
+
+            switch(ItemHandler.getHandSide(player, ItemHandler.getUsableDualHandedItem(player)))
+            {
+                case RIGHT:
+                {
+                    offX = offset.xCoord * prog;
+                    offZ = offset.zCoord * prog;
+                    break;
+                }
+                case LEFT:
+                {
+                    offX = -offset.xCoord * prog;
+                    offZ = -offset.zCoord * prog;
+                    break;
+                }
+            }
         }
 
         GlStateManager.translate((float)d - offX, (float)d1 - offY, (float)d2 - offZ);

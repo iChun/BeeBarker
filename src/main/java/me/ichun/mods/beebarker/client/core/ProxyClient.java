@@ -7,6 +7,7 @@ import me.ichun.mods.beebarker.common.entity.EntityBee;
 import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
 import me.ichun.mods.ichunutil.client.render.item.ItemRenderingHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.item.ItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
@@ -27,7 +28,7 @@ public class ProxyClient extends ProxyCommon
 
         ModelLoader.setCustomModelResourceLocation(BeeBarker.itemBeeBarker, 0, new ModelResourceLocation("beebarker:bee_barker", "inventory"));
 
-        ItemRenderingHelper.registerBowAnimationLockedItem(ItemBeeBarker.class);
+        ItemHandler.registerDualHandedItem(ItemBeeBarker.class);
         ItemRenderingHelper.registerSwingProofItem(new ItemRenderingHelper.SwingProofHandler(ItemBeeBarker.class, new EquipBeeBarkerHandler()));
 
         RenderingRegistry.registerEntityRenderingHandler(EntityBee.class, new RenderBee.RenderFactory());
