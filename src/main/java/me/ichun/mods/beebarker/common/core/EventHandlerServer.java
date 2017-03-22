@@ -21,6 +21,7 @@ import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -36,6 +37,16 @@ public class EventHandlerServer
     public void onBlockBreak(BlockEvent.BreakEvent event)
     {
         ItemStack is = ItemHandler.getUsableDualHandedItem(event.getPlayer());
+        if(is != null && is.getItem() instanceof ItemBeeBarker)
+        {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onClickBlock(PlayerInteractEvent.LeftClickBlock event)
+    {
+        ItemStack is = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
         if(is != null && is.getItem() instanceof ItemBeeBarker)
         {
             event.setCanceled(true);
