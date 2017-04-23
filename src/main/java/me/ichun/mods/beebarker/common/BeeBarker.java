@@ -29,7 +29,7 @@ public class BeeBarker
 {
     public static final String MOD_NAME = "BeeBarker";
     public static final String MOD_ID = "beebarker";
-    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".0.0";
+    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".0.1";
 
     @Mod.Instance(MOD_ID)
     public static BeeBarker instance;
