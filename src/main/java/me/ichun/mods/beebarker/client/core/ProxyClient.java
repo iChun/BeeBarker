@@ -28,7 +28,6 @@ public class ProxyClient extends ProxyCommon
 
         ModelLoader.setCustomModelResourceLocation(BeeBarker.itemBeeBarker, 0, new ModelResourceLocation("beebarker:bee_barker", "inventory"));
 
-        ItemHandler.registerDualHandedItem(ItemBeeBarker.class);
         ItemRenderingHelper.registerSwingProofItem(new ItemRenderingHelper.SwingProofHandler(ItemBeeBarker.class, new EquipBeeBarkerHandler()));
 
         RenderingRegistry.registerEntityRenderingHandler(EntityBee.class, new RenderBee.RenderFactory());

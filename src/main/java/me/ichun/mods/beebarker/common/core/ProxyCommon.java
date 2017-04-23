@@ -3,6 +3,7 @@ package me.ichun.mods.beebarker.common.core;
 import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.entity.EntityBee;
 import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
+import me.ichun.mods.ichunutil.common.item.ItemHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,6 +15,8 @@ public class ProxyCommon
     public void preInit()
     {
         BeeBarker.itemBeeBarker = GameRegistry.register((new ItemBeeBarker()).setFull3D().setRegistryName(new ResourceLocation("beebarker", "bee_barker")).setUnlocalizedName("beebarker.bee_barker").setCreativeTab(CreativeTabs.TOOLS));
+
+        ItemHandler.registerDualHandedItem(ItemBeeBarker.class);
 
         MinecraftForge.EVENT_BUS.register(new EventHandlerServer());
     }
