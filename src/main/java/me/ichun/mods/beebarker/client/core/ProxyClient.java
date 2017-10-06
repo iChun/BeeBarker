@@ -26,8 +26,6 @@ public class ProxyClient extends ProxyCommon
         BeeBarker.eventHandlerClient = new EventHandlerClient();
         MinecraftForge.EVENT_BUS.register(BeeBarker.eventHandlerClient);
 
-        ModelLoader.setCustomModelResourceLocation(BeeBarker.itemBeeBarker, 0, new ModelResourceLocation("beebarker:bee_barker", "inventory"));
-
         ItemRenderingHelper.registerSwingProofItem(new ItemRenderingHelper.SwingProofHandler(ItemBeeBarker.class, new EquipBeeBarkerHandler()));
 
         RenderingRegistry.registerEntityRenderingHandler(EntityBee.class, new RenderBee.RenderFactory());

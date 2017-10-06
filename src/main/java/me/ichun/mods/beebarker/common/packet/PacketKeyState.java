@@ -35,7 +35,7 @@ public class PacketKeyState extends AbstractPacket
     }
 
     @Override
-    public AbstractPacket execute(Side side, EntityPlayer player)
+    public void execute(Side side, EntityPlayer player)
     {
         if(add)
         {
@@ -48,7 +48,6 @@ public class PacketKeyState extends AbstractPacket
         {
             BeeBarker.eventHandlerClient.pressState.remove(name);
         }
-        return null;
     }
 
     @Override

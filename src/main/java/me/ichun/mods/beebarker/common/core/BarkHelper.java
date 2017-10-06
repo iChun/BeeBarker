@@ -44,13 +44,13 @@ public class BarkHelper
 
             if(speed > 10)
             {
-                float pitchSpike = (float)Math.pow(MathHelper.clamp_float((speed - 10) / 250F, 0F, 1F), 1D);
+                float pitchSpike = (float)Math.pow(MathHelper.clamp((speed - 10) / 250F, 0F, 1F), 1D);
                 pitch += 1.5F * pitchSpike;
             }
 
             EntityPlayer player = (EntityPlayer)living;
             ItemStack is = ItemHandler.getUsableDualHandedItem(player);
-            if(is != null && is.getItem() instanceof ItemBeeBarker && is.getTagCompound() != null && is.getTagCompound().hasKey(ItemBeeBarker.WOLF_DATA_STRING) && !player.capabilities.isCreativeMode)
+            if(is.getItem() instanceof ItemBeeBarker && is.getTagCompound() != null && is.getTagCompound().hasKey(ItemBeeBarker.WOLF_DATA_STRING) && !player.capabilities.isCreativeMode)
             {
                 NBTTagCompound tag = (NBTTagCompound)((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).getTag("ForgeData");
 
@@ -58,7 +58,7 @@ public class BarkHelper
                 {
                     if(tag.getInteger(EventHandlerServer.BEE_CHARGE_STRING) <= 0)
                     {
-                        EntityHelper.playSoundAtEntity(living, SoundEvents.ENTITY_WOLF_HURT, SoundCategory.PLAYERS, 0.4F, (living.worldObj.rand.nextFloat() - living.worldObj.rand.nextFloat()) * 0.2F + pitch);
+                        EntityHelper.playSoundAtEntity(living, SoundEvents.ENTITY_WOLF_HURT, SoundCategory.PLAYERS, 0.4F, (living.world.rand.nextFloat() - living.world.rand.nextFloat()) * 0.2F + pitch);
                         return;
                     }
                     tag.setInteger(EventHandlerServer.BEE_CHARGE_STRING, tag.getInteger(EventHandlerServer.BEE_CHARGE_STRING) - 1);
@@ -72,71 +72,9 @@ public class BarkHelper
         }
         for(int i = 0; i < BeeBarker.config.beeCount; i++)
         {
-            living.worldObj.spawnEntityInWorld(new EntityBee(living.worldObj, living));
+            living.world.spawnEntity(new EntityBee(living.world, living));
         }
-        EntityHelper.playSoundAtEntity(living, SoundEvents.ENTITY_WOLF_AMBIENT, SoundCategory.PLAYERS, 0.4F, (living.worldObj.rand.nextFloat() - living.worldObj.rand.nextFloat()) * 0.2F + pitch);
-    }
-
-    @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent event)
-    {
-        if(event.phase == TickEvent.Phase.END)
-        {
-            Iterator<Map.Entry<String, Integer>> ite = cooldown.entrySet().iterator();
-            while(ite.hasNext())
-            {
-                Map.Entry<String, Integer> e = ite.next();
-                if(e.getValue() > 0)
-                {
-                    if(e.getValue() > 120)
-                    {
-                        EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(e.getKey());
-                        if(player != null)
-                        {
-                            BeeBarker.channel.sendToAllAround(new PacketSpawnParticles(-1, player.getEntityId(), true), new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 32D));
-                        }
-                    }
-                    e.setValue(e.getValue() - 2);
-                }
-                else
-                {
-                    ite.remove();
-                }
-            }
-            for(int i = pressState.size() - 1; i >= 0; i--)
-            {
-                String name = pressState.get(i);
-                EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(name);
-                if(player != null)
-                {
-                    ItemStack is = ItemHandler.getUsableDualHandedItem(player);
-                    if(is != null && is.getItem() == BeeBarker.itemBeeBarker && is.getTagCompound() != null && is.getTagCompound().hasKey(ItemBeeBarker.WOLF_DATA_STRING) && BeeBarker.config.easterEgg == 1 && ((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).hasKey("CustomName") && ((NBTTagCompound)is.getTagCompound().getTag(ItemBeeBarker.WOLF_DATA_STRING)).getString("CustomName").equals("iChun"))
-                    {
-                        if(player.ticksExisted % 4 == 0)
-                        {
-                            RayTraceResult mop = EntityHelper.getEntityLook(player, 6D);
-                            if(mop.typeOfHit == RayTraceResult.Type.ENTITY && !mop.entityHit.isImmuneToFire())
-                            {
-                                mop.entityHit.setFire(2);
-                                mop.entityHit.attackEntityFrom((new EntityDamageSourceIndirect("beeburnt", mop.entityHit, player)).setFireDamage(), 2);
-                            }
-                        }
-                        if(player.ticksExisted % 13 == 0)
-                        {
-                            EntityHelper.playSoundAtEntity(player, SoundEvents.ENTITY_WOLF_PANT, SoundCategory.PLAYERS, 0.6F, 1F);
-                        }
-                    }
-                    else
-                    {
-                        removePressState(name);
-                    }
-                }
-                else
-                {
-                    removePressState(name);
-                }
-            }
-        }
+        EntityHelper.playSoundAtEntity(living, SoundEvents.ENTITY_WOLF_AMBIENT, SoundCategory.PLAYERS, 0.4F, (living.world.rand.nextFloat() - living.world.rand.nextFloat()) * 0.2F + pitch);
     }
 
     public static void removePressState(String name)
@@ -148,7 +86,7 @@ public class BarkHelper
         }
     }
 
-    public static HashMap<String, Integer> cooldown = new HashMap<String, Integer>();
+    public static HashMap<String, Integer> cooldown = new HashMap<>();
 
-    public static ArrayList<String> pressState = new ArrayList<String>();
+    public static ArrayList<String> pressState = new ArrayList<>();
 }

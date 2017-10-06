@@ -16,6 +16,8 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -24,6 +26,12 @@ import java.util.ArrayList;
 
 public class EventHandlerClient
 {
+    @SubscribeEvent
+    public void onModelRegistry(ModelRegistryEvent event)
+    {
+        ModelLoader.setCustomModelResourceLocation(BeeBarker.itemBeeBarker, 0, new ModelResourceLocation("beebarker:bee_barker", "inventory"));
+    }
+
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event)
     {
@@ -36,8 +44,8 @@ public class EventHandlerClient
         Minecraft mc = Minecraft.getMinecraft();
         if(mc.currentScreen == null && !iChunUtil.eventHandlerClient.hasScreen)
         {
-            ItemStack currentInv = ItemHandler.getUsableDualHandedItem(mc.thePlayer);
-            if(currentInv != null && currentInv.getItem() instanceof ItemBeeBarker)
+            ItemStack currentInv = ItemHandler.getUsableDualHandedItem(mc.player);
+            if(currentInv.getItem() instanceof ItemBeeBarker)
             {
                 if(event.keyBind.isMinecraftBind() && event.keyBind.keyIndex == mc.gameSettings.keyBindUseItem.getKeyCode())
                 {
@@ -57,7 +65,7 @@ public class EventHandlerClient
         if(event.phase == TickEvent.Phase.END)
         {
             Minecraft mc = Minecraft.getMinecraft();
-            if(mc.theWorld != null && !mc.isGamePaused())
+            if(mc.world != null && !mc.isGamePaused())
             {
                 prevYaw = currentYaw;
                 prevPitch = currentPitch;
@@ -65,7 +73,7 @@ public class EventHandlerClient
                 currentPitch = EntityHelper.updateRotation(currentPitch, targetPitch, 10F);
                 if(pullTime > 0)
                 {
-                    if(!(pressState.contains(mc.thePlayer.getName()) && pullTime == 7))
+                    if(!(pressState.contains(mc.player.getName()) && pullTime == 7))
                     {
                         pullTime--;
                     }
@@ -77,10 +85,10 @@ public class EventHandlerClient
                     idleTime++;
                     if(idleTime > 60) //3 second idle.
                     {
-                        if(mc.theWorld.rand.nextFloat() < 0.008F)
+                        if(mc.world.rand.nextFloat() < 0.008F)
                         {
-                            targetYaw = mc.theWorld.rand.nextFloat() * 90F - 45F;
-                            targetPitch = mc.theWorld.rand.nextFloat() * 60F - 30F;
+                            targetYaw = mc.world.rand.nextFloat() * 90F - 45F;
+                            targetPitch = mc.world.rand.nextFloat() * 60F - 30F;
                         }
                     }
                 }
@@ -98,35 +106,35 @@ public class EventHandlerClient
             EnumHandSide side = ItemHandler.getHandSide(event.player, ItemHandler.getUsableDualHandedItem(event.player));
             if(event.player == Minecraft.getMinecraft().getRenderViewEntity() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) //is first person
             {
-                double d = - look.zCoord * 0.75D;
-                double d1 = look.yCoord * 1.5D + 1.15D;
-                double d2 = + look.xCoord * 0.75D;
+                double d = - look.z * 0.75D;
+                double d1 = look.y * 1.5D + 1.15D;
+                double d2 = + look.x * 0.75D;
                 if(side == EnumHandSide.LEFT)
                 {
                     d = -d;
                     d2 = -d2;
                 }
-                pos = event.player.getPositionVector().addVector(look.xCoord * 1.5D + d, d1, look.zCoord * 1.5D + d2);
+                pos = event.player.getPositionVector().addVector(look.x * 1.5D + d, d1, look.z * 1.5D + d2);
             }
             else
             {
-                double d = - look.zCoord * (event.player.width * 0.2D);
-                double d1 = look.yCoord * 1.5D + (event.player.getEyeHeight() * 0.8D);
-                double d2 = + look.xCoord * (event.player.width * 0.2D);
+                double d = - look.z * (event.player.width * 0.2D);
+                double d1 = look.y * 1.5D + (event.player.getEyeHeight() * 0.8D);
+                double d2 = + look.x * (event.player.width * 0.2D);
                 if(side == EnumHandSide.LEFT)
                 {
                     d = -d;
                     d2 = -d2;
                 }
-                pos = event.player.getPositionVector().addVector(look.xCoord * 1.5D + d, d1, look.zCoord * 1.5D + d2);
+                pos = event.player.getPositionVector().addVector(look.x * 1.5D + d, d1, look.z * 1.5D + d2);
             }
             for(int i = 0; i < 4; i++)
             {
-                double d0 = event.player.worldObj.rand.nextGaussian() * 0.02D;
-                double d1 = event.player.worldObj.rand.nextGaussian() * 0.02D + event.player.worldObj.rand.nextFloat() * 0.1D;
-                double d2 = event.player.worldObj.rand.nextGaussian() * 0.02D;
-                event.player.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.xCoord, pos.yCoord, pos.zCoord, look.xCoord * 0.3D + d0, look.yCoord * 0.3D + d1, look.zCoord * 0.3D + d2);
-                event.player.worldObj.spawnParticle(EnumParticleTypes.FLAME, pos.xCoord, pos.yCoord, pos.zCoord, look.xCoord * 0.3D + d0, look.yCoord * 0.3D + d1, look.zCoord * 0.3D + d2);
+                double d0 = event.player.world.rand.nextGaussian() * 0.02D;
+                double d1 = event.player.world.rand.nextGaussian() * 0.02D + event.player.world.rand.nextFloat() * 0.1D;
+                double d2 = event.player.world.rand.nextGaussian() * 0.02D;
+                event.player.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.x, pos.y, pos.z, look.x * 0.3D + d0, look.y * 0.3D + d1, look.z * 0.3D + d2);
+                event.player.world.spawnParticle(EnumParticleTypes.FLAME, pos.x, pos.y, pos.z, look.x * 0.3D + d0, look.y * 0.3D + d1, look.z * 0.3D + d2);
             }
         }
     }

@@ -47,19 +47,19 @@ public class EntityBee extends Entity
         }
 
         Vec3d look = shooter.getLookVec();
-        Vec3d pos = shooter.getPositionVector().addVector(look.xCoord * 1.3D - look.zCoord * (renderedShooter.width * 0.2D), look.yCoord * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.zCoord * 1.3D + look.xCoord * (renderedShooter.width * 0.2D));
+        Vec3d pos = shooter.getPositionVector().addVector(look.x * 1.3D - look.z * (renderedShooter.width * 0.2D), look.y * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.z * 1.3D + look.x * (renderedShooter.width * 0.2D));
         double gausAmount = 0.02D;
         double d0 = rand.nextGaussian() * gausAmount;
         double d1 = rand.nextGaussian() * gausAmount;
         double d2 = rand.nextGaussian() * gausAmount;
 
-        setPosition(pos.xCoord, pos.yCoord, pos.zCoord);
+        setPosition(pos.x, pos.y, pos.z);
         double mag = shooter instanceof EntityWolf ? 0.15D : 0.4D;
-        motionX = look.xCoord * mag + d0;
-        motionY = look.yCoord * mag + d1;
-        motionZ = look.zCoord * mag + d2;
+        motionX = look.x * mag + d0;
+        motionY = look.y * mag + d1;
+        motionZ = look.z * mag + d2;
 
-        float var20 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+        float var20 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
         for (this.rotationPitch = (float)(Math.atan2(this.motionY, (double)var20) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
@@ -99,7 +99,7 @@ public class EntityBee extends Entity
     {
         super.onUpdate();
         life--;
-        if(life < 0 && !worldObj.isRemote || life < -200 || isInWater() || isInLava() || isBurning())
+        if(life < 0 && !world.isRemote || life < -200 || isInWater() || isInLava() || isBurning())
         {
             setDead();
             return;
@@ -114,21 +114,21 @@ public class EntityBee extends Entity
         motionY += d1;
         motionZ += d2;
 
-        if(!worldObj.isRemote)
+        if(!world.isRemote)
         {
             Vec3d var17 = new Vec3d(this.posX, this.posY, this.posZ);
             Vec3d var3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-            RayTraceResult mop = this.worldObj.rayTraceBlocks(var17, var3, false, true, false);
+            RayTraceResult mop = this.world.rayTraceBlocks(var17, var3, false, true, false);
             var17 = new Vec3d(this.posX, this.posY, this.posZ);
             var3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
             if(mop != null)
             {
-                var3 = new Vec3d(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
+                var3 = new Vec3d(mop.hitVec.x, mop.hitVec.y, mop.hitVec.z);
             }
 
             Entity collidedEnt = null;
-            List var6 = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+            List var6 = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D));
             double var7 = 0.0D;
             int var9;
             float var11;
@@ -145,7 +145,7 @@ public class EntityBee extends Entity
                 if(var10.canBeCollidedWith())
                 {
                     var11 = 0.3F;
-                    AxisAlignedBB var12 = var10.getEntityBoundingBox().expand((double)var11, (double)var11, (double)var11);
+                    AxisAlignedBB var12 = var10.getEntityBoundingBox().grow((double)var11);
                     RayTraceResult var13 = var12.calculateIntercept(var17, var3);
 
                     if(var13 != null)
@@ -170,7 +170,7 @@ public class EntityBee extends Entity
                     doNotHarm = true;
                     for(ItemStack armor : equipment)
                     {
-                        if(!(armor != null && armor.getItem() != null && armor.getItem().getClass().getSimpleName().contains("bee"))) //If not wearing full bee suit, STING.
+                        if(!(armor != null && armor.getItem().getClass().getSimpleName().contains("bee"))) //If not wearing full bee suit, STING.
                         {
                             doNotHarm = false;
                             break;
@@ -197,7 +197,7 @@ public class EntityBee extends Entity
         this.posY += this.motionY;
         this.posZ += this.motionZ;
 
-        float var20 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+        float var20 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
         for (this.rotationPitch = (float)(Math.atan2(this.motionY, (double)var20) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
@@ -231,9 +231,9 @@ public class EntityBee extends Entity
     public void setDead()
     {
         super.setDead();
-        if(worldObj.isRemote)
+        if(world.isRemote)
         {
-            worldObj.spawnParticle(EnumParticleTypes.FIREWORKS_SPARK, prevPosX, prevPosY, prevPosZ, 0D, 0D, 0D, 0xedb200);
+            world.spawnParticle(EnumParticleTypes.FIREWORKS_SPARK, prevPosX, prevPosY, prevPosZ, 0D, 0D, 0D, 0xedb200);
         }
     }
 

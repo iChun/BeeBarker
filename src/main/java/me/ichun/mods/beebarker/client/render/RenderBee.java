@@ -50,24 +50,24 @@ public class RenderBee extends Render<EntityBee>
             }
 
             Vec3d look = player.getLookVec();
-            Vec3d posTP = renderedShooter.getPositionVector().addVector(look.xCoord * 1.3D - look.zCoord * (renderedShooter.width * 0.2D), look.yCoord * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.zCoord * 1.3D + look.xCoord * (renderedShooter.width * 0.2D));
-            Vec3d posFP = renderedShooter.getPositionVector().addVector(look.xCoord * 1.3D - look.zCoord * 0.75D, look.yCoord * 1.3D + 1.15D, look.zCoord * 1.5D + look.xCoord * 0.75D);
+            Vec3d posTP = renderedShooter.getPositionVector().addVector(look.x * 1.3D - look.z * (renderedShooter.width * 0.2D), look.y * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.z * 1.3D + look.x * (renderedShooter.width * 0.2D));
+            Vec3d posFP = renderedShooter.getPositionVector().addVector(look.x * 1.3D - look.z * 0.75D, look.y * 1.3D + 1.15D, look.z * 1.5D + look.x * 0.75D);
             Vec3d offset = posTP.subtract(posFP);
-            float prog = 1F - MathHelper.clamp_float((bee.ticksExisted + f1) / 10F, 0F, 1F);
-            offY = offset.yCoord * prog;
+            float prog = 1F - MathHelper.clamp((bee.ticksExisted + f1) / 10F, 0F, 1F);
+            offY = offset.y * prog;
 
             switch(ItemHandler.getHandSide(player, ItemHandler.getUsableDualHandedItem(player)))
             {
                 case RIGHT:
                 {
-                    offX = offset.xCoord * prog;
-                    offZ = offset.zCoord * prog;
+                    offX = offset.x * prog;
+                    offZ = offset.z * prog;
                     break;
                 }
                 case LEFT:
                 {
-                    offX = -offset.xCoord * prog;
-                    offZ = -offset.zCoord * prog;
+                    offX = -offset.x * prog;
+                    offZ = -offset.z * prog;
                     break;
                 }
             }

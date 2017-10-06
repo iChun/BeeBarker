@@ -130,15 +130,15 @@ public class ItemRenderBeeBarker implements IModelBase
         Minecraft mc = Minecraft.getMinecraft();
 
         boolean isItemRender = ModelBaseWrapper.isItemRender(currentPerspective) || currentPerspective == ItemCameraTransforms.TransformType.GUI;
-        boolean isFirstPerson = ModelBaseWrapper.isFirstPerson(currentPerspective) && lastPlayer == mc.thePlayer;
+        boolean isFirstPerson = ModelBaseWrapper.isFirstPerson(currentPerspective) && lastPlayer == mc.player;
 
         float pullTime = ((EventHandlerClient.PULL_TIME - BeeBarker.eventHandlerClient.pullTime) + renderTick);
-        if(isFirstPerson && BeeBarker.eventHandlerClient.pressState.contains(mc.thePlayer.getName()) && BeeBarker.eventHandlerClient.pullTime == 7)
+        if(isFirstPerson && BeeBarker.eventHandlerClient.pressState.contains(mc.player.getName()) && BeeBarker.eventHandlerClient.pullTime == 7)
         {
             pullTime = (EventHandlerClient.PULL_TIME - BeeBarker.eventHandlerClient.pullTime);
         }
 
-        float curveProg = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((float)Math.pow((pullTime / EventHandlerClient.PULL_TIME), 0.5D), 0.0F, 1.0F) * 180F));
+        float curveProg = (float)Math.sin(Math.toRadians(MathHelper.clamp((float)Math.pow((pullTime / EventHandlerClient.PULL_TIME), 0.5D), 0.0F, 1.0F) * 180F));
 
         if(ModelBaseWrapper.isEntityRender(currentPerspective))
         {

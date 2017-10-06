@@ -21,15 +21,17 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 
 @Mod(modid = BeeBarker.MOD_ID, name = BeeBarker.MOD_NAME,
         version = BeeBarker.VERSION,
-        guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
-        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR +".2.0," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
-        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR +".0.0," + iChunUtil.VERSION_MAJOR + ".1.0)"
+        guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
+        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR +".0.2," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
+        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR +".0.0," + iChunUtil.VERSION_MAJOR + ".1.0)",
+        acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE
 )
+
 public class BeeBarker
 {
     public static final String MOD_NAME = "BeeBarker";
     public static final String MOD_ID = "beebarker";
-    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".0.1";
+    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".0.0";
 
     @Mod.Instance(MOD_ID)
     public static BeeBarker instance;
@@ -62,9 +64,7 @@ public class BeeBarker
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event)
     {
-        proxy.init();
-
-        isForestryInstalled = Loader.isModLoaded("Forestry");
+        isForestryInstalled = Loader.isModLoaded("forestry");
     }
 
     @Mod.EventHandler

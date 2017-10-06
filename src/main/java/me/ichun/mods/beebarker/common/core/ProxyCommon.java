@@ -14,17 +14,10 @@ public class ProxyCommon
 {
     public void preInit()
     {
-        BeeBarker.itemBeeBarker = GameRegistry.register((new ItemBeeBarker()).setFull3D().setRegistryName(new ResourceLocation("beebarker", "bee_barker")).setUnlocalizedName("beebarker.bee_barker").setCreativeTab(CreativeTabs.TOOLS));
-
         ItemHandler.registerDualHandedItem(ItemBeeBarker.class);
 
+        EntityRegistry.registerModEntity(new ResourceLocation("beebarker", "entity_bee"), EntityBee.class, "BeeEnt", 90, BeeBarker.instance, 64, 1, true);
+
         MinecraftForge.EVENT_BUS.register(new EventHandlerServer());
-    }
-
-    public void init()
-    {
-        MinecraftForge.EVENT_BUS.register(new BarkHelper());
-
-        EntityRegistry.registerModEntity(EntityBee.class, "BeeEnt", 90, BeeBarker.instance, 64, 1, true);
     }
 }
