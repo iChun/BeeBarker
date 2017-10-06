@@ -19,3 +19,5 @@ beebarker.config.prop.maxBeeCharge.comment=Maximum bees a bee barker can have.
 beebarker.config.prop.beeDamage.comment=Damage of each bee
 beebarker.config.prop.beeCount.comment=Number of bees to fire whenever the bee barker barks.
 beebarker.config.prop.easterEgg.comment=Enable the easter egg bee barker?
+
+entity.BeeEnt.name=Bee
