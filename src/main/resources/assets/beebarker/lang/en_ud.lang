@@ -1,0 +1,23 @@
+item.beebarker.bee_barker.name=ɹǝʞɹɐᗺ ǝǝᗺ
+
+beebarker.beeCharge=ǝᵷɹɐɥƆ ǝǝᗺ
+beebarker.beeCharge.unlimited=pǝʇᴉɯᴉꞁu∩
+
+beebarker.easteregg.item=¡ᵷᵷƎ ɹǝʇsɐƎ
+
+death.attack.beeburnt=%2$s%1$s
+death.attack.beestung=%2$s%1$s
+
+beebarker.config.prop.beeBarkerChance.name=ǝɔuɐɥƆ uoᴉʇdɯnsuoƆ ǝǝᗺ
+beebarker.config.prop.maxBeeCharge.name=ɹǝᵷɹɐɥƆ ǝǝᗺ xɐW
+beebarker.config.prop.beeDamage.name=ǝᵷɐɯɐᗡ ǝǝᗺ
+beebarker.config.prop.beeCount.name=ʇoɥS ɹǝԀ ʇunoƆ ǝǝᗺ
+beebarker.config.prop.easterEgg.name=ᵷᵷƎ ɹǝʇsɐƎ
+
+beebarker.config.prop.beeBarkerChance.comment=˙ɹǝʞɹɐq ǝǝq ǝɥʇ oʇ ǝᵷɹɐɥɔ ǝǝq ɐ ppɐ oʇ ǝɔuɐɥƆ
+beebarker.config.prop.maxBeeCharge.comment=˙ǝʌɐɥ uɐɔ ɹǝʞɹɐq ǝǝq ɐ sǝǝq ɯnɯᴉxɐW
+beebarker.config.prop.beeDamage.comment=ǝǝq ɥɔɐǝ ɟo ǝᵷɐɯɐᗡ
+beebarker.config.prop.beeCount.comment=˙sʞɹɐq ɹǝʞɹɐq ǝǝq ǝɥʇ ɹǝʌǝuǝɥʍ ǝɹᴉɟ oʇ sǝǝq ɟo ɹǝqɯnN
+beebarker.config.prop.easterEgg.comment=¿ɹǝʞɹɐq ǝǝq ᵷᵷǝ ɹǝʇsɐǝ ǝɥʇ ǝꞁqɐuƎ
+
+entity.BeeEnt.name=ǝǝᗺ
