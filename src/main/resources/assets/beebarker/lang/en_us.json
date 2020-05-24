@@ -1,0 +1,25 @@
+{
+  "item.beebarker.bee_barker": "Bee Barker",
+
+  "beebarker.beeCharge": "Bee Charge",
+  "beebarker.beeCharge.unlimited": "Unlimited",
+
+  "beebarker.easteregg.item": "Easter Egg!",
+
+  "death.attack.beeburnt": "%1$s was sautéed with a dog by %2$s",
+  "death.attack.beestung": "%1$s was stung by a bee from %2$s",
+
+  "config.beebarker.prop.beeBarkerChance.name": "Bee Consumption Chance",
+  "config.beebarker.prop.maxBeeCharge.name": "Max Bee Charger",
+  "config.beebarker.prop.beeDamage.name": "Bee Damage",
+  "config.beebarker.prop.beeCount.name": "Bee Count Per Shot",
+  "config.beebarker.prop.easterEgg.name": "Easter Egg",
+
+  "config.beebarker.prop.beeBarkerChance.comment": "Chance to add a bee charge to the bee barker.",
+  "config.beebarker.prop.maxBeeCharge.comment": "Maximum bees a bee barker can have.",
+  "config.beebarker.prop.beeDamage.comment": "Damage of each bee",
+  "config.beebarker.prop.beeCount.comment": "Number of bees to fire whenever the bee barker barks.",
+  "config.beebarker.prop.easterEgg.comment": "Enable the easter egg bee barker?",
+
+  "entity.BeeEnt.name": "Bee"
+}

@@ -1,76 +1,134 @@
 package me.ichun.mods.beebarker.common;
 
 import me.ichun.mods.beebarker.client.core.EventHandlerClient;
-import me.ichun.mods.beebarker.common.core.BarkHelper;
-import me.ichun.mods.beebarker.common.core.Config;
-import me.ichun.mods.beebarker.common.core.ProxyCommon;
+import me.ichun.mods.beebarker.client.fx.ParticleBuzz;
+import me.ichun.mods.beebarker.client.render.ItemRenderBeeBarker;
+import me.ichun.mods.beebarker.client.render.RenderBee;
+import me.ichun.mods.beebarker.common.config.ConfigCommon;
+import me.ichun.mods.beebarker.common.config.ConfigServer;
+import me.ichun.mods.beebarker.common.core.EventHandlerServer;
+import me.ichun.mods.beebarker.common.entity.EntityBee;
+import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
 import me.ichun.mods.beebarker.common.packet.PacketBark;
 import me.ichun.mods.beebarker.common.packet.PacketKeyState;
 import me.ichun.mods.beebarker.common.packet.PacketSpawnParticles;
-import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
-import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
-import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
+import me.ichun.mods.ichunutil.client.item.ItemEffectHandler;
+import me.ichun.mods.ichunutil.client.model.item.ItemModelRenderer;
+import me.ichun.mods.ichunutil.common.network.PacketChannel;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.*;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@Mod(modid = BeeBarker.MOD_ID, name = BeeBarker.MOD_NAME,
-        version = BeeBarker.VERSION,
-        guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
-        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR +".0.2," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
-        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR +".0.0," + iChunUtil.VERSION_MAJOR + ".1.0)",
-        acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE
-)
-
+@Mod(BeeBarker.MOD_ID)
 public class BeeBarker
 {
     public static final String MOD_NAME = "BeeBarker";
     public static final String MOD_ID = "beebarker";
-    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".0.0";
+    public static final String PROTOCOL = "1";
 
-    @Mod.Instance(MOD_ID)
-    public static BeeBarker instance;
-
-    @SidedProxy(clientSide = "me.ichun.mods.beebarker.client.core.ProxyClient", serverSide = "me.ichun.mods.beebarker.common.core.ProxyCommon")
-    public static ProxyCommon proxy;
-
-    public static PacketChannel channel;
-
-    public static Config config;
-
-    public static Item itemBeeBarker;
-
-    public static boolean isForestryInstalled;
+    public static ConfigCommon configCommon;
+    public static ConfigServer configServer;
 
     public static EventHandlerClient eventHandlerClient;
 
-    @Mod.EventHandler
-    public void onPreInit(FMLPreInitializationEvent event)
+    public static PacketChannel channel;
+
+    public static boolean isForestryInstalled;
+
+    public BeeBarker()
     {
-        config = ConfigHandler.registerConfig(new Config(event.getSuggestedConfigurationFile()));
+        configCommon = new ConfigCommon().init();
+        configServer = new ConfigServer().init();
 
-        proxy.preInit();
+        MinecraftForge.EVENT_BUS.register(new EventHandlerServer());
 
-        channel = new PacketChannel(MOD_NAME, PacketBark.class, PacketSpawnParticles.class, PacketKeyState.class);
+        channel = new PacketChannel(new ResourceLocation(MOD_ID, "channel"), PROTOCOL, PacketBark.class, PacketSpawnParticles.class, PacketKeyState.class);
 
-        UpdateChecker.registerMod(new UpdateChecker.ModVersionInfo(MOD_NAME, iChunUtil.VERSION_OF_MC, VERSION, false));
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        EntityTypes.REGISTRY.register(bus);
+        Items.REGISTRY.register(bus);
+        Particles.REGISTRY.register(bus);
+        bus.addListener(this::onCommonSetup);
+
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            bus.addListener(this::onClientSetup);
+            bus.addListener(this::onRegisterParticleFactory);
+            bus.addListener(this::onModelBake);
+
+            MinecraftForge.EVENT_BUS.register(eventHandlerClient = new EventHandlerClient());
+
+            ItemEffectHandler.init();
+        });
     }
 
-    @Mod.EventHandler
-    public void onInit(FMLInitializationEvent event)
+    private void onCommonSetup(FMLCommonSetupEvent event)
     {
-        isForestryInstalled = Loader.isModLoaded("forestry");
+        isForestryInstalled = ModList.get().isLoaded("forestry");
     }
 
-    @Mod.EventHandler
-    public void onServerStopping(FMLServerStoppingEvent event)
+    private void onClientSetup(FMLClientSetupEvent event)
     {
-        BarkHelper.cooldown.clear();
-        BarkHelper.pressState.clear();
+        RenderingRegistry.registerEntityRenderingHandler(EntityTypes.BEE.get(), new RenderBee.RenderFactory());
+
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> me.ichun.mods.ichunutil.client.core.EventHandlerClient::getConfigGui);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void onRegisterParticleFactory(ParticleFactoryRegisterEvent event)
+    {
+        Minecraft.getInstance().particles.registerFactory(Particles.BUZZ.get(), ParticleBuzz.Factory::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void onModelBake(ModelBakeEvent event)
+    {
+        event.getModelRegistry().put(new ModelResourceLocation("beebarker:bee_barker", "inventory"), new ItemModelRenderer(ItemRenderBeeBarker.INSTANCE));
+    }
+
+    public static class EntityTypes
+    {
+        private static final DeferredRegister<EntityType<?>> REGISTRY = new DeferredRegister<>(ForgeRegistries.ENTITIES, MOD_ID);
+
+        public static final RegistryObject<EntityType<EntityBee>> BEE = REGISTRY.register("bee", () -> EntityType.Builder.create(EntityBee::new, EntityClassification.MISC)
+                .size(0.1F, 0.1F)
+                .setTrackingRange(64)
+                .setUpdateInterval(1)
+                .setShouldReceiveVelocityUpdates(true)
+                .build("from " + MOD_NAME + ". Ignore this.")
+        );
+    }
+
+    public static class Items
+    {
+        private static final DeferredRegister<Item> REGISTRY = new DeferredRegister<>(ForgeRegistries.ITEMS, MOD_ID);
+
+        public static final RegistryObject<ItemBeeBarker> BEE_BARKER = REGISTRY.register("bee_barker", () -> new ItemBeeBarker(new Item.Properties().maxDamage(251).group(ItemGroup.TOOLS).setISTER(() -> () -> ItemRenderBeeBarker.INSTANCE))); //Maxdmg = Max + 2
+    }
+
+    public static class Particles
+    {
+        private static final DeferredRegister<ParticleType<?>> REGISTRY = new DeferredRegister<>(ForgeRegistries.PARTICLE_TYPES, MOD_ID);
+
+        public static final RegistryObject<BasicParticleType> BUZZ = REGISTRY.register("buzz", () -> new BasicParticleType(false));
     }
 }

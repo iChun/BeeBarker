@@ -2,67 +2,68 @@ package me.ichun.mods.beebarker.common.entity;
 
 import com.google.common.collect.Iterables;
 import me.ichun.mods.beebarker.common.BeeBarker;
-import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.morph.api.MorphApi;
+import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SimpleAnimatedParticle;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-
-import java.util.List;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityBee extends Entity
 {
     public static final DataParameter<Integer> SHOOTER_ID = EntityDataManager.createKey(EntityBee.class, DataSerializers.VARINT);
 
     public int life;
-    public EntityLivingBase shooter;
+    public LivingEntity shooter;
 
-    public EntityBee(World worldIn)
+    public EntityBee(EntityType<?> entityTypeIn, World worldIn)
     {
-        super(worldIn);
+        super(entityTypeIn, worldIn);
         life = 60 + rand.nextInt(40); //3 - 5 seconds life
-        setSize(0.1F, 0.1F);
     }
 
-    public EntityBee(World world, EntityLivingBase shooter)
+    public EntityBee setShooter(LivingEntity shooter)
     {
-        this(world);
         this.shooter = shooter;
 
-        EntityLivingBase renderedShooter = shooter;
-        if(iChunUtil.hasMorphMod() && shooter instanceof EntityPlayer && MorphApi.getApiImpl().getMorphEntity(shooter.getEntityWorld(), shooter.getName(), Side.SERVER) != null)
-        {
-            renderedShooter = MorphApi.getApiImpl().getMorphEntity(shooter.getEntityWorld(), shooter.getName(), Side.SERVER);
-        }
+        LivingEntity renderedShooter = shooter;
+        //        if(iChunUtil.hasMorphMod() && shooter instanceof PlayerEntity && MorphApi.getApiImpl().getMorphEntity(shooter.getEntityWorld(), shooter.getName(), Side.SERVER) != null) //TODO morph
+        //        {
+        //            renderedShooter = MorphApi.getApiImpl().getMorphEntity(shooter.getEntityWorld(), shooter.getName(), Side.SERVER);
+        //        }
 
         Vec3d look = shooter.getLookVec();
-        Vec3d pos = shooter.getPositionVector().addVector(look.x * 1.3D - look.z * (renderedShooter.width * 0.2D), look.y * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.z * 1.3D + look.x * (renderedShooter.width * 0.2D));
+        Vec3d pos = shooter.getPositionVector().add(look.x * 1.3D - look.z * (renderedShooter.getWidth() * 0.2D), look.y * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.z * 1.3D + look.x * (renderedShooter.getWidth() * 0.2D));
         double gausAmount = 0.02D;
         double d0 = rand.nextGaussian() * gausAmount;
         double d1 = rand.nextGaussian() * gausAmount;
         double d2 = rand.nextGaussian() * gausAmount;
 
         setPosition(pos.x, pos.y, pos.z);
-        double mag = shooter instanceof EntityWolf ? 0.15D : 0.4D;
-        motionX = look.x * mag + d0;
-        motionY = look.y * mag + d1;
-        motionZ = look.z * mag + d2;
+        double mag = shooter instanceof WolfEntity ? 0.15D : 0.4D;
+        setMotion(look.x * mag + d0, look.y * mag + d1, look.z * mag + d2);
+        Vec3d motion = getMotion();
 
-        float var20 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-        this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
+        float var20 = MathHelper.sqrt(motion.x * motion.x + motion.z * motion.z);
+        this.rotationYaw = (float)(Math.atan2(motion.x, motion.z) * 180.0D / Math.PI);
 
-        for (this.rotationPitch = (float)(Math.atan2(this.motionY, (double)var20) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
+        for (this.rotationPitch = (float)(Math.atan2(motion.y, (double)var20) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
         {
             ;
         }
@@ -86,22 +87,24 @@ public class EntityBee extends Entity
         this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
 
         getDataManager().set(SHOOTER_ID, shooter.getEntityId());
+
+        return this;
     }
 
     @Override
-    protected void entityInit()
+    protected void registerData()
     {
         getDataManager().register(SHOOTER_ID, -1);
     }
 
     @Override
-    public void onUpdate()
+    public void tick()
     {
-        super.onUpdate();
+        super.tick();
         life--;
         if(life < 0 && !world.isRemote || life < -200 || isInWater() || isInLava() || isBurning())
         {
-            setDead();
+            remove();
             return;
         }
 
@@ -110,59 +113,16 @@ public class EntityBee extends Entity
         double d1 = rand.nextGaussian() * gausAmount;
         double d2 = rand.nextGaussian() * gausAmount;
 
-        motionX += d0;
-        motionY += d1;
-        motionZ += d2;
+        setMotion(getMotion().add(d0, d1, d2));
+        Vec3d motion = getMotion();
 
         if(!world.isRemote)
         {
-            Vec3d var17 = new Vec3d(this.posX, this.posY, this.posZ);
-            Vec3d var3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-            RayTraceResult mop = this.world.rayTraceBlocks(var17, var3, false, true, false);
-            var17 = new Vec3d(this.posX, this.posY, this.posZ);
-            var3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+            RayTraceResult result = EntityHelper.rayTrace(world, getPositionVec(), getPositionVec().add(getMotion()), this, true, RayTraceContext.BlockMode.COLLIDER, b -> true, RayTraceContext.FluidMode.ANY, e -> !(e instanceof EntityBee || ticksExisted < 7 && e == shooter));
 
-            if(mop != null)
+            if(result.getType() == RayTraceResult.Type.ENTITY)
             {
-                var3 = new Vec3d(mop.hitVec.x, mop.hitVec.y, mop.hitVec.z);
-            }
-
-            Entity collidedEnt = null;
-            List var6 = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D));
-            double var7 = 0.0D;
-            int var9;
-            float var11;
-
-            for(var9 = 0; var9 < var6.size(); ++var9)
-            {
-                Entity var10 = (Entity)var6.get(var9);
-
-                if(var10 instanceof EntityBee || ticksExisted < 7 && var10 == shooter)
-                {
-                    continue;
-                }
-
-                if(var10.canBeCollidedWith())
-                {
-                    var11 = 0.3F;
-                    AxisAlignedBB var12 = var10.getEntityBoundingBox().grow((double)var11);
-                    RayTraceResult var13 = var12.calculateIntercept(var17, var3);
-
-                    if(var13 != null)
-                    {
-                        double var14 = var17.distanceTo(var13.hitVec);
-
-                        if(var14 < var7 || var7 == 0.0D)
-                        {
-                            collidedEnt = var10;
-                            var7 = var14;
-                        }
-                    }
-                }
-            }
-
-            if(collidedEnt != null)
-            {
+                Entity collidedEnt = ((EntityRayTraceResult)result).getEntity();
                 boolean doNotHarm = false;
                 Iterable<ItemStack> equipment = collidedEnt.getArmorInventoryList();
                 if(!Iterables.isEmpty(equipment))
@@ -180,27 +140,25 @@ public class EntityBee extends Entity
                 if(!doNotHarm)
                 {
                     collidedEnt.hurtResistantTime = 0;
-                    collidedEnt.attackEntityFrom(new EntityDamageSourceIndirect("beestung", collidedEnt, shooter), BeeBarker.config.beeDamage);
+                    collidedEnt.attackEntityFrom(new IndirectEntityDamageSource("beestung", collidedEnt, shooter), BeeBarker.configCommon.beeDamage);
                 }
 
-                setDead();
+                remove();
                 return;
             }
-            else if(mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK)
+            else if(result.getType() == RayTraceResult.Type.BLOCK)
             {
-                setDead();
+                remove();
                 return;
             }
         }
 
-        this.posX += this.motionX;
-        this.posY += this.motionY;
-        this.posZ += this.motionZ;
+        setPosition(getPosX() + motion.x, getPosY() + motion.y, getPosZ() + motion.z);
 
-        float var20 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-        this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
+        float var20 = MathHelper.sqrt(motion.x * motion.x + motion.z * motion.z);
+        this.rotationYaw = (float)(Math.atan2(motion.x, motion.z) * 180.0D / Math.PI);
 
-        for (this.rotationPitch = (float)(Math.atan2(this.motionY, (double)var20) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
+        for (this.rotationPitch = (float)(Math.atan2(motion.y, (double)var20) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
         {
             ;
         }
@@ -223,47 +181,67 @@ public class EntityBee extends Entity
         this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
         this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
 
-        this.setPosition(this.posX, this.posY, this.posZ);
+        this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
         this.doBlockCollisions();
     }
 
     @Override
-    public void setDead()
+    public void remove()
     {
-        super.setDead();
+        super.remove();
         if(world.isRemote)
         {
-            world.spawnParticle(EnumParticleTypes.FIREWORKS_SPARK, prevPosX, prevPosY, prevPosZ, 0D, 0D, 0D, 0xedb200);
+            spawnParticle();
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void spawnParticle()
+    {
+        Particle particle = Minecraft.getInstance().particles.addParticle(ParticleTypes.FIREWORK, prevPosX, prevPosY, prevPosZ, 0D, 0D, 0D);
+        if(particle instanceof SimpleAnimatedParticle)
+        {
+            ((SimpleAnimatedParticle)particle).setColor(0xedb200);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public boolean isInRangeToRenderDist(double distance) {
+        double d0 = this.getBoundingBox().getAverageEdgeLength() * 10D;
+        if (Double.isNaN(d0)) {
+            d0 = 1.0D;
+        }
+
+        d0 = d0 * 64.0D * getRenderDistanceWeight();
+        return distance < d0 * d0;
+    }
 
     @Override
     public void setPortal(BlockPos pos)
     {
-        setDead();
+        remove();
     }
 
     @Override
-    public Entity changeDimension(int dimensionIn)
+    public Entity changeDimension(DimensionType destination)
     {
-        setDead();
+        remove();
         return null;
     }
 
     @Override
-    public boolean writeToNBTOptional(NBTTagCompound tagCompund)
-    {
-        return false;
-    }
+    public boolean writeUnlessRemoved(CompoundNBT compound) { return false; } //disable saving of entity
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound tagCompund)
-    {
-    }
+    protected void readAdditional(CompoundNBT compound){}
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound tagCompound)
+    protected void writeAdditional(CompoundNBT compound){}
+
+    @Override
+    public IPacket<?> createSpawnPacket()
     {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

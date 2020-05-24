@@ -1,11 +1,9 @@
 package me.ichun.mods.beebarker.common.packet;
 
-import io.netty.buffer.ByteBuf;
 import me.ichun.mods.beebarker.common.BeeBarker;
-import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.relauncher.Side;
+import me.ichun.mods.ichunutil.common.network.AbstractPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketKeyState extends AbstractPacket
 {
@@ -21,38 +19,34 @@ public class PacketKeyState extends AbstractPacket
     }
 
     @Override
-    public void writeTo(ByteBuf buffer)
+    public void writeTo(PacketBuffer buffer)
     {
-        ByteBufUtils.writeUTF8String(buffer, name);
+        buffer.writeString(name);
         buffer.writeBoolean(add);
     }
 
     @Override
-    public void readFrom(ByteBuf buffer)
+    public void readFrom(PacketBuffer buffer)
     {
-        name = ByteBufUtils.readUTF8String(buffer);
+        name = readString(buffer);
         add = buffer.readBoolean();
     }
 
     @Override
-    public void execute(Side side, EntityPlayer player)
+    public void process(NetworkEvent.Context context) //receivingSide CLIENT
     {
-        if(add)
-        {
-            if(!BeeBarker.eventHandlerClient.pressState.contains(name))
+        context.enqueueWork(() -> {
+            if(add)
             {
-                BeeBarker.eventHandlerClient.pressState.add(name);
+                if(!BeeBarker.eventHandlerClient.pressState.contains(name))
+                {
+                    BeeBarker.eventHandlerClient.pressState.add(name);
+                }
             }
-        }
-        else
-        {
-            BeeBarker.eventHandlerClient.pressState.remove(name);
-        }
-    }
-
-    @Override
-    public Side receivingSide()
-    {
-        return Side.CLIENT;
+            else
+            {
+                BeeBarker.eventHandlerClient.pressState.remove(name);
+            }
+        });
     }
 }

@@ -1,62 +1,56 @@
 package me.ichun.mods.beebarker.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.beebarker.common.entity.EntityBee;
 import me.ichun.mods.ichunutil.client.model.ModelBee;
-import me.ichun.mods.ichunutil.client.module.patron.LayerPatronEffect;
-import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
-import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
-import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.common.item.ItemHandler;
-import me.ichun.mods.morph.api.MorphApi;
+import me.ichun.mods.ichunutil.common.item.DualHandedItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelPig;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
-import net.minecraftforge.fml.relauncher.Side;
 
-public class RenderBee extends Render<EntityBee>
+public class RenderBee extends EntityRenderer<EntityBee>
 {
     public ModelBee modelBee;
 
-    public RenderBee(RenderManager manager)
+    public RenderBee(EntityRendererManager manager)
     {
         super(manager);
         modelBee = new ModelBee();
     }
 
     @Override
-    public void doRender(EntityBee bee, double d, double d1, double d2, float f, float f1)
+    public void render(EntityBee bee, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn)
     {
-        GlStateManager.pushMatrix();
         double offX = 0D;
         double offY = 0D;
         double offZ = 0D;
 
-        if(bee.getDataManager().get(EntityBee.SHOOTER_ID) == Minecraft.getMinecraft().getRenderViewEntity().getEntityId() && Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityLivingBase && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
+        if(bee.getDataManager().get(EntityBee.SHOOTER_ID) == Minecraft.getInstance().getRenderViewEntity().getEntityId() && Minecraft.getInstance().getRenderViewEntity() instanceof LivingEntity && Minecraft.getInstance().gameSettings.thirdPersonView == 0)
         {
-            EntityLivingBase player = (EntityLivingBase)Minecraft.getMinecraft().getRenderViewEntity();
-            EntityLivingBase renderedShooter = (EntityLivingBase)Minecraft.getMinecraft().getRenderViewEntity();
-            if(iChunUtil.hasMorphMod() && player instanceof EntityPlayer && MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT) != null)
-            {
-                renderedShooter = MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT);
-            }
+            LivingEntity player = (LivingEntity)Minecraft.getInstance().getRenderViewEntity();
+            LivingEntity renderedShooter = (LivingEntity)Minecraft.getInstance().getRenderViewEntity();
+            //            if(iChunUtil.hasMorphMod() && player instanceof PlayerEntity && MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT) != null) //TODO morph
+            //            {
+            //                renderedShooter = MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT);
+            //            }
 
             Vec3d look = player.getLookVec();
-            Vec3d posTP = renderedShooter.getPositionVector().addVector(look.x * 1.3D - look.z * (renderedShooter.width * 0.2D), look.y * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.z * 1.3D + look.x * (renderedShooter.width * 0.2D));
-            Vec3d posFP = renderedShooter.getPositionVector().addVector(look.x * 1.3D - look.z * 0.75D, look.y * 1.3D + 1.15D, look.z * 1.5D + look.x * 0.75D);
+            Vec3d posTP = renderedShooter.getPositionVector().add(look.x * 1.3D - look.z * (renderedShooter.getWidth() * 0.2D), look.y * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.z * 1.3D + look.x * (renderedShooter.getWidth() * 0.2D));
+            Vec3d posFP = renderedShooter.getPositionVector().add(look.x * 1.3D - look.z * 0.9D, look.y * 1.3D + 1.15D, look.z * 1.3D + look.x * 0.9D);
             Vec3d offset = posTP.subtract(posFP);
-            float prog = 1F - MathHelper.clamp((bee.ticksExisted + f1) / 10F, 0F, 1F);
+            float prog = 1F - MathHelper.clamp((bee.ticksExisted + partialTicks) / 10F, 0F, 1F);
             offY = offset.y * prog;
 
-            switch(ItemHandler.getHandSide(player, ItemHandler.getUsableDualHandedItem(player)))
+            switch(DualHandedItem.getHandSide(player, DualHandedItem.getUsableDualHandedItem(player)))
             {
                 case RIGHT:
                 {
@@ -73,27 +67,25 @@ public class RenderBee extends Render<EntityBee>
             }
         }
 
-        GlStateManager.translate((float)d - offX, (float)d1 - offY, (float)d2 - offZ);
-        GlStateManager.rotate(EntityHelper.interpolateRotation(bee.prevRotationPitch, bee.rotationPitch, f1), 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(180f + f, 0.0F, 1.0F, 0.0F);
+        stack.translate(-offX, -offY, -offZ);
+        stack.rotate(Vector3f.ZP.rotationDegrees(MathHelper.rotLerp(bee.prevRotationPitch, bee.rotationPitch, partialTicks)));
+        stack.rotate(Vector3f.YP.rotationDegrees(180f + entityYaw));
         float scale = 0.8F;
-        GlStateManager.scale(scale, scale, scale);
-        this.bindEntityTexture(bee);
-        GlStateManager.scale(-1.0F, -1.0F, 1.0F);
-        modelBee.render(0.0625F);
-        GlStateManager.popMatrix();
+        stack.scale(scale, scale, scale);
+        stack.scale(-1.0F, -1.0F, 1.0F);
+        modelBee.render(stack, bufferIn.getBuffer(RenderType.getEntityTranslucentCull(getEntityTexture(bee))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityBee entity)
+    public ResourceLocation getEntityTexture(EntityBee entity)
     {
-        return LayerPatronEffect.texBee;
+        return ModelBee.TEX_BEE;
     }
 
     public static class RenderFactory implements IRenderFactory<EntityBee>
     {
         @Override
-        public Render<? super EntityBee> createRenderFor(RenderManager manager)
+        public EntityRenderer<? super EntityBee> createRenderFor(EntityRendererManager manager)
         {
             return new RenderBee(manager);
         }
