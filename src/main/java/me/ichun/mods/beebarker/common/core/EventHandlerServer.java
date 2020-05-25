@@ -192,6 +192,29 @@ public class EventHandlerServer
 
     //Recreate the entity
     @SubscribeEvent
+    public void onEntitySpawn(EntityJoinWorldEvent event)
+    {
+        if(!event.getWorld().isRemote)
+        {
+            if(event.getEntity() instanceof WolfEntity)
+            {
+                WolfEntity wolf = (WolfEntity)event.getEntity();
+                for(PrioritizedGoal goal : wolf.goalSelector.goals)
+                {
+                    if(goal.inner instanceof BegGoal)
+                    {
+                        goal.inner = new FlowerBegGoal((BegGoal)goal.inner);
+                    }
+                }
+            }
+            else if(event.getEntity() instanceof ItemEntity && spawnWolfFromItem(null, (ItemEntity)event.getEntity(), null))
+            {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void onLivingDrops(LivingDropsEvent event)
     {
         if(!event.getEntityLiving().world.isRemote)
@@ -270,22 +293,6 @@ public class EventHandlerServer
                 else
                 {
                     BarkHelper.removePressState(name);
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onEntitySpawn(EntityJoinWorldEvent event)
-    {
-        if(event.getEntity() instanceof WolfEntity && !event.getEntity().world.isRemote)
-        {
-            WolfEntity wolf = (WolfEntity)event.getEntity();
-            for(PrioritizedGoal goal : wolf.goalSelector.goals)
-            {
-                if(goal.inner instanceof BegGoal)
-                {
-                    goal.inner = new FlowerBegGoal((BegGoal)goal.inner);
                 }
             }
         }

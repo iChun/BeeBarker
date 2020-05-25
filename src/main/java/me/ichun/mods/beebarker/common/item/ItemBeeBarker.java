@@ -73,7 +73,7 @@ public class ItemBeeBarker extends Item
     @OnlyIn(Dist.CLIENT)
     public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> items)
     {
-        if (this.isInGroup(group))
+        if (this.isInGroup(tab))
         {
             ItemStack wolfStack = new ItemStack(BeeBarker.Items.BEE_BARKER.get()); //Special unlimited BeeBarker
             CompoundNBT tag = new CompoundNBT();

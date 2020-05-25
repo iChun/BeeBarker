@@ -1,7 +1,6 @@
 package me.ichun.mods.beebarker.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.util.UUIDTypeAdapter;
 import me.ichun.mods.beebarker.client.core.EventHandlerClient;
 import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.item.ItemBeeBarker;
@@ -20,7 +19,6 @@ import net.minecraft.client.renderer.entity.model.WolfModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.DyeColor;
@@ -37,7 +35,7 @@ public class ItemRenderBeeBarker extends ItemStackTileEntityRenderer
             new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(0.0085F, -0.70F, -0.6F), new Vector3f(0.95F, 0.95F, 0.95F)), //tp right
             new ItemTransformVec3f(new Vector3f(3F, 0F, 2F), new Vector3f(0.3F, -0.6F, -0.6F), new Vector3f(1F, 1F, 0.8F)), //fp left
             new ItemTransformVec3f(new Vector3f(3F, 0F, 2F), new Vector3f(0.3F, -0.6F, -0.6F), new Vector3f(1F, 1F, 0.8F)), //fp right
-            new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(0F, -0.25F, 0F), new Vector3f(1.5F, 1.5F, 1.5F)), //head
+            new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(0F, -0.25F, -0.25F), new Vector3f(1.5F, 1.5F, 1.5F)), //head
             new ItemTransformVec3f(new Vector3f(25F, 212.5F, 0F), new Vector3f(0.075F, -0.325F, -0.05F), new Vector3f(0.7F, 0.7F, 0.7F)), //gui
             new ItemTransformVec3f(new Vector3f(0F, 90F, 0F), new Vector3f(0F, 0F, 0F), new Vector3f(0.3F, 0.3F, 0.3F)), //ground
             new ItemTransformVec3f(new Vector3f(0F, 90F, 0F), new Vector3f(-0.075F, -0.325F, -0.05F), new Vector3f(0.6F, 0.6F, 0.6F)) //fixed
@@ -147,18 +145,18 @@ public class ItemRenderBeeBarker extends ItemStackTileEntityRenderer
             }
 
             modelWolf.setRotationAngles(null, 0F, 0F, 0F, yaw, pitch);
-            modelWolf.render(stack, bufferIn.getBuffer(RenderType.getEntityTranslucentCull(ResourceHelper.TEX_TAMED_WOLF)), combinedLightIn, combinedOverlayIn, 1F, 1F, 1F, 1F);
+            modelWolf.render(stack, bufferIn.getBuffer(RenderType.getEntityCutout(ResourceHelper.TEX_TAMED_WOLF)), combinedLightIn, combinedOverlayIn, 1F, 1F, 1F, 1F);
         }
         else
         {
             modelWolf.setRotationAngles(null, 0F, 0F, 0F, 0F, 0F);
-            modelWolf.render(stack, bufferIn.getBuffer(RenderType.getEntityTranslucentCull(ResourceHelper.TEX_TAMED_WOLF)), combinedLightIn, combinedOverlayIn, 1F, 1F, 1F, 1F);
+            modelWolf.render(stack, bufferIn.getBuffer(RenderType.getEntityCutout(ResourceHelper.TEX_TAMED_WOLF)), combinedLightIn, combinedOverlayIn, 1F, 1F, 1F, 1F);
         }
 
         //Render collar
         DyeColor enumdyecolor = DyeColor.byId(!is.isEmpty() && is.getTag() != null && is.getTag().contains(ItemBeeBarker.WOLF_DATA_STRING) ? is.getTag().getCompound(ItemBeeBarker.WOLF_DATA_STRING).getByte("CollarColor") : 12);
         float[] afloat = SheepEntity.getDyeRgb(enumdyecolor);
-        modelWolf.render(stack, bufferIn.getBuffer(RenderType.getEntityTranslucentCull(ResourceHelper.TEX_WOLF_COLLAR)), combinedLightIn, combinedOverlayIn, afloat[0], afloat[1], afloat[2], 1F);
+        modelWolf.render(stack, bufferIn.getBuffer(RenderType.getEntityCutout(ResourceHelper.TEX_WOLF_COLLAR)), combinedLightIn, combinedOverlayIn, afloat[0], afloat[1], afloat[2], 1F);
 
         if(isFirstPerson && lastPlayer != null && !lastPlayer.isInvisible())
         {
@@ -218,6 +216,13 @@ public class ItemRenderBeeBarker extends ItemStackTileEntityRenderer
         currentPerspective = null;
     }
 
+    @Override
+    public void setToOrigin(MatrixStack stack)
+    {
+        stack.translate(0.5D, 0.5D, 0.5D); //reset the translation in ItemRenderer
+        stack.translate(0.0D, 1.5D, 0.0D); //translate down to the base of models
+        stack.scale(-1F, -1F, 1F); //flip the models so it renders upright
+    }
 
     @Override
     public ItemCameraTransforms getCameraTransforms()
