@@ -52,7 +52,7 @@ public class PacketBark extends AbstractPacket
                         if(!BarkHelper.pressState.contains(player.getName().getUnformattedComponentText()))
                         {
                             BarkHelper.pressState.add(player.getName().getUnformattedComponentText());
-                            EntityHelper.playSoundAtEntity(player, SoundEvents.ENTITY_WOLF_GROWL, SoundCategory.PLAYERS, 0.4F, 1.0F);
+                            EntityHelper.playSound(player, SoundEvents.ENTITY_WOLF_GROWL, SoundCategory.PLAYERS, 0.4F, 1.0F);
                             BeeBarker.channel.sendTo(new PacketKeyState(player.getName().getUnformattedComponentText(), true), PacketDistributor.ALL.noArg());
                         }
                     }

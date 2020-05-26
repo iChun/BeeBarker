@@ -1,5 +1,6 @@
 package me.ichun.mods.beebarker.common.item;
 
+import me.ichun.mods.beebarker.client.render.ItemRenderBeeBarker;
 import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.core.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
@@ -19,6 +20,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -30,7 +32,13 @@ public class ItemBeeBarker extends Item
 
     public ItemBeeBarker(Properties properties)
     {
-        super(properties);
+        super(DistExecutor.runForDist(() -> () -> attachISTER(properties), () -> () -> properties));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static Properties attachISTER(Properties properties)
+    {
+        return properties.setISTER(() -> () -> ItemRenderBeeBarker.INSTANCE);
     }
 
     @Override
@@ -46,7 +54,7 @@ public class ItemBeeBarker extends Item
         {
             EntityHelper.nudgeHand(-50F);
         }
-        EntityHelper.playSoundAtEntity(entity, SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.NEUTRAL, 0.6F, (entity.world.rand.nextFloat() - entity.world.rand.nextFloat()) * 0.2F + 1F);
+        EntityHelper.playSound(entity, SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.NEUTRAL, 0.6F, (entity.world.rand.nextFloat() - entity.world.rand.nextFloat()) * 0.2F + 1F);
         return false;
     }
 
@@ -65,7 +73,6 @@ public class ItemBeeBarker extends Item
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
     {
-//        return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
         return slotChanged; // || !ItemStack.areItemStacksEqual(oldStack, newStack);
     }
 

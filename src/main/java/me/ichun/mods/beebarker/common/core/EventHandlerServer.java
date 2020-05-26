@@ -282,7 +282,7 @@ public class EventHandlerServer
                         }
                         if(player.ticksExisted % 13 == 0)
                         {
-                            EntityHelper.playSoundAtEntity(player, SoundEvents.ENTITY_WOLF_PANT, SoundCategory.PLAYERS, 0.6F, 1F);
+                            EntityHelper.playSound(player, SoundEvents.ENTITY_WOLF_PANT, SoundCategory.PLAYERS, 0.6F, 1F);
                         }
                     }
                     else

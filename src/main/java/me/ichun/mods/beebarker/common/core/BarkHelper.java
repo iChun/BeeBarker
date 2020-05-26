@@ -51,7 +51,7 @@ public class BarkHelper
                 {
                     if(tag.getInt(EventHandlerServer.BEE_CHARGE_STRING) <= 0)
                     {
-                        EntityHelper.playSoundAtEntity(living, SoundEvents.ENTITY_WOLF_HURT, SoundCategory.PLAYERS, 0.4F, (living.world.rand.nextFloat() - living.world.rand.nextFloat()) * 0.2F + pitch);
+                        EntityHelper.playSound(living, SoundEvents.ENTITY_WOLF_HURT, SoundCategory.PLAYERS, 0.4F, (living.world.rand.nextFloat() - living.world.rand.nextFloat()) * 0.2F + pitch);
                         return;
                     }
                     tag.putInt(EventHandlerServer.BEE_CHARGE_STRING, tag.getInt(EventHandlerServer.BEE_CHARGE_STRING) - 1);
@@ -67,7 +67,7 @@ public class BarkHelper
         {
             living.world.addEntity(BeeBarker.EntityTypes.BEE.get().create(living.world).setShooter(living));
         }
-        EntityHelper.playSoundAtEntity(living, SoundEvents.ENTITY_WOLF_AMBIENT, SoundCategory.PLAYERS, 0.4F, (living.world.rand.nextFloat() - living.world.rand.nextFloat()) * 0.2F + pitch);
+        EntityHelper.playSound(living, SoundEvents.ENTITY_WOLF_AMBIENT, SoundCategory.PLAYERS, 0.4F, (living.world.rand.nextFloat() - living.world.rand.nextFloat()) * 0.2F + pitch);
     }
 
     public static void removePressState(String name)

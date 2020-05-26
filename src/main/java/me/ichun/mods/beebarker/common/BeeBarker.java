@@ -122,7 +122,7 @@ public class BeeBarker
     {
         private static final DeferredRegister<Item> REGISTRY = new DeferredRegister<>(ForgeRegistries.ITEMS, MOD_ID);
 
-        public static final RegistryObject<ItemBeeBarker> BEE_BARKER = REGISTRY.register("bee_barker", () -> new ItemBeeBarker(new Item.Properties().maxDamage(251).group(ItemGroup.TOOLS).setISTER(() -> () -> ItemRenderBeeBarker.INSTANCE))); //Maxdmg = Max + 2
+        public static final RegistryObject<ItemBeeBarker> BEE_BARKER = REGISTRY.register("bee_barker", () -> new ItemBeeBarker(new Item.Properties().maxDamage(251).group(ItemGroup.TOOLS))); //Maxdmg = Max + 2
     }
 
     public static class Particles
