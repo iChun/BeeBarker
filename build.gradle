@@ -14,8 +14,8 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version = '8.0.0'
-group = 'attachablegrinder'
-archivesBaseName = 'AttachableGrinder-1.15.2'
+group = 'beebarker'
+archivesBaseName = 'BeeBarker-1.15.2'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
