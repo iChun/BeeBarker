@@ -15,11 +15,11 @@
   "config.beebarker.prop.beeCount.name": "Bee Count Per Shot",
   "config.beebarker.prop.easterEgg.name": "Easter Egg",
 
-  "config.beebarker.prop.beeBarkerChance.comment": "Chance to add a bee charge to the bee barker.",
-  "config.beebarker.prop.maxBeeCharge.comment": "Maximum bees a bee barker can have.",
-  "config.beebarker.prop.beeDamage.comment": "Damage of each bee",
-  "config.beebarker.prop.beeCount.comment": "Number of bees to fire whenever the bee barker barks.",
-  "config.beebarker.prop.easterEgg.comment": "Enable the easter egg bee barker?",
+  "config.beebarker.prop.beeBarkerChance.desc": "Chance to add a bee charge to the bee barker.",
+  "config.beebarker.prop.maxBeeCharge.desc": "Maximum bees a bee barker can have.",
+  "config.beebarker.prop.beeDamage.desc": "Damage of each bee",
+  "config.beebarker.prop.beeCount.desc": "Number of bees to fire whenever the bee barker barks.",
+  "config.beebarker.prop.easterEgg.desc": "Enable the easter egg bee barker?",
 
   "entity.BeeEnt.name": "Bee"
 }

@@ -19,7 +19,7 @@ public class FlowerBegGoal extends BegGoal
 
     @Override
     public boolean shouldExecute() {
-        this.player = this.world.getClosestPlayer(this.field_220688_f, this.wolf);
+        this.player = this.world.getClosestPlayer(this.playerPredicate, this.wolf);
         return (this.player != null && this.hasTemptationItemInHand(this.player)) | originalGoal.shouldExecute();
     }
 
