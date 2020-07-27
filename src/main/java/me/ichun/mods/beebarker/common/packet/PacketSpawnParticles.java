@@ -9,7 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -65,8 +65,8 @@ public class PacketSpawnParticles extends AbstractPacket
                 double d0 = living.world.rand.nextGaussian() * 0.02D;
                 double d1 = living.world.rand.nextGaussian() * 0.02D;
                 double d2 = living.world.rand.nextGaussian() * 0.02D;
-                Vec3d look = living.getLookVec();
-                Vec3d pos = living.getPositionVector().add(look.x * 0.5D - look.z * (living.getWidth() * 0.67D), look.y * 0.5D + (living.getEyeHeight() * 0.8D), look.z * 0.5D + look.x * (living.getWidth() * 0.67D));
+                Vector3d look = living.getLookVec();
+                Vector3d pos = living.getPositionVec().add(look.x * 0.5D - look.z * (living.getWidth() * 0.67D), look.y * 0.5D + (living.getEyeHeight() * 0.8D), look.z * 0.5D + look.x * (living.getWidth() * 0.67D));
                 living.world.addParticle(ParticleTypes.SMOKE, pos.x, pos.y, pos.z, d0, d1, d2);
             }
         }

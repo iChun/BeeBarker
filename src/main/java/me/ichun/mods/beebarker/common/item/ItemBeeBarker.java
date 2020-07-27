@@ -65,9 +65,9 @@ public class ItemBeeBarker extends Item
     }
 
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity playerIn, LivingEntity target, Hand hand)
+    public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity playerIn, LivingEntity target, Hand hand)
     {
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override

@@ -19,11 +19,15 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.network.NetworkHooks;
+
+import javax.annotation.Nullable;
 
 public class EntityBee extends Entity
 {
@@ -48,8 +52,8 @@ public class EntityBee extends Entity
         //            renderedShooter = MorphApi.getApiImpl().getMorphEntity(shooter.getEntityWorld(), shooter.getName(), Side.SERVER);
         //        }
 
-        Vec3d look = shooter.getLookVec();
-        Vec3d pos = shooter.getPositionVector().add(look.x * 1.3D - look.z * (renderedShooter.getWidth() * 0.2D), look.y * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.z * 1.3D + look.x * (renderedShooter.getWidth() * 0.2D));
+        Vector3d look = shooter.getLookVec();
+        Vector3d pos = shooter.getPositionVec().add(look.x * 1.3D - look.z * (renderedShooter.getWidth() * 0.2D), look.y * 1.3D + (renderedShooter.getEyeHeight() * 0.8D), look.z * 1.3D + look.x * (renderedShooter.getWidth() * 0.2D));
         double gausAmount = 0.02D;
         double d0 = rand.nextGaussian() * gausAmount;
         double d1 = rand.nextGaussian() * gausAmount;
@@ -58,7 +62,7 @@ public class EntityBee extends Entity
         setPosition(pos.x, pos.y, pos.z);
         double mag = shooter instanceof WolfEntity ? 0.15D : 0.4D;
         setMotion(look.x * mag + d0, look.y * mag + d1, look.z * mag + d2);
-        Vec3d motion = getMotion();
+        Vector3d motion = getMotion();
 
         float var20 = MathHelper.sqrt(motion.x * motion.x + motion.z * motion.z);
         this.rotationYaw = (float)(Math.atan2(motion.x, motion.z) * 180.0D / Math.PI);
@@ -114,7 +118,7 @@ public class EntityBee extends Entity
         double d2 = rand.nextGaussian() * gausAmount;
 
         setMotion(getMotion().add(d0, d1, d2));
-        Vec3d motion = getMotion();
+        Vector3d motion = getMotion();
 
         if(!world.isRemote)
         {
@@ -223,8 +227,9 @@ public class EntityBee extends Entity
         remove();
     }
 
+    @Nullable
     @Override
-    public Entity changeDimension(DimensionType destination)
+    public Entity changeDimension(ServerWorld world, ITeleporter teleporter)
     {
         remove();
         return null;

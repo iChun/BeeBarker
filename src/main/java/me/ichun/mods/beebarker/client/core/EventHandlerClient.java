@@ -9,7 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.HandSide;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
@@ -92,8 +92,8 @@ public class EventHandlerClient
     {
         if(event.phase == TickEvent.Phase.END && event.side.isClient() && pressState.contains(event.player.getName().getUnformattedComponentText()))
         {
-            Vec3d look = event.player.getLookVec();
-            Vec3d pos;
+            Vector3d look = event.player.getLookVec();
+            Vector3d pos;
             HandSide side = DualHandedItem.getHandSide(event.player, DualHandedItem.getUsableDualHandedItem(event.player));
             if(event.player == Minecraft.getInstance().getRenderViewEntity() && Minecraft.getInstance().gameSettings.thirdPersonView == 0) //is first person
             {
@@ -105,7 +105,7 @@ public class EventHandlerClient
                     d = -d;
                     d2 = -d2;
                 }
-                pos = event.player.getPositionVector().add(look.x * 1.5D + d, d1, look.z * 1.5D + d2);
+                pos = event.player.getPositionVec().add(look.x * 1.5D + d, d1, look.z * 1.5D + d2);
             }
             else
             {
@@ -117,7 +117,7 @@ public class EventHandlerClient
                     d = -d;
                     d2 = -d2;
                 }
-                pos = event.player.getPositionVector().add(look.x * 1.5D + d, d1, look.z * 1.5D + d2);
+                pos = event.player.getPositionVec().add(look.x * 1.5D + d, d1, look.z * 1.5D + d2);
             }
             for(int i = 0; i < 4; i++)
             {

@@ -12,19 +12,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.WolfModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.Vector3f;
 
 @SuppressWarnings("deprecation")
 public class ItemRenderBeeBarker extends ItemStackTileEntityRenderer
@@ -92,7 +92,7 @@ public class ItemRenderBeeBarker extends ItemStackTileEntityRenderer
     }
 
     @Override
-    public void render(ItemStack is, MatrixStack stack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+    public void func_239207_a_(ItemStack is, ItemCameraTransforms.TransformType transformType, MatrixStack stack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
         float partialTick = iChunUtil.eventHandlerClient.partialTick;
 
@@ -231,7 +231,7 @@ public class ItemRenderBeeBarker extends ItemStackTileEntityRenderer
     }
 
     @Override
-    public void handleItemState(ItemStack stack, World world, LivingEntity entity)
+    public void handleItemState(ItemStack stack, ClientWorld world, LivingEntity entity)
     {
         if(entity instanceof AbstractClientPlayerEntity)
         {

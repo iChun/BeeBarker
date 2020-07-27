@@ -135,7 +135,7 @@ public class EventHandlerServer
                         {
                             CompoundNBT wolfTag = new CompoundNBT();
                             wolfData.putInt(BEE_HIGHEST_CHARGE, wolfData.getInt(BEE_CHARGE_STRING));
-                            wolf.setSitting(false);
+                            wolf.func_233686_v_(false); //setSitting
                             wolf.writeUnlessRemoved(wolfTag);
                             ItemStack wolfStack = new ItemStack(BeeBarker.Items.BEE_BARKER.get()); //1 damage so you can see the damage bar.
                             wolfStack.setDamage(wolfData.getBoolean("IsSuperBeeDog") ? 0 : wolfData.getInt(BEE_CHARGE_STRING) == 0 ? 250 : 1);
@@ -172,14 +172,14 @@ public class EventHandlerServer
                         {
                             if(chance < BeeBarker.configCommon.beeBarkerChance / 100F)
                             {
-                                BeeBarker.channel.sendTo(new PacketSpawnParticles(wolf.getEntityId(), event.getPlayer().getEntityId(), false), PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(wolf.getPosX(), wolf.getPosY(), wolf.getPosZ(), 64D, wolf.dimension)));
+                                BeeBarker.channel.sendTo(new PacketSpawnParticles(wolf.getEntityId(), event.getPlayer().getEntityId(), false), PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(wolf.getPosX(), wolf.getPosY(), wolf.getPosZ(), 64D, wolf.world.func_234923_W_())));
                                 wolfData.putBoolean(BARKABLE_STRING, true);
                                 wolfData.putInt(BEE_CHARGE_STRING, wolfData.getInt(BEE_CHARGE_STRING) + 1);
                                 wolfData.putInt(BEE_HIGHEST_CHARGE, wolfData.getInt(BEE_CHARGE_STRING));
                             }
                             else
                             {
-                                BeeBarker.channel.sendTo(new PacketSpawnParticles(wolf.getEntityId(), event.getPlayer().getEntityId(), true), PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(wolf.getPosX(), wolf.getPosY(), wolf.getPosZ(), 64D, wolf.dimension)));
+                                BeeBarker.channel.sendTo(new PacketSpawnParticles(wolf.getEntityId(), event.getPlayer().getEntityId(), true), PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(wolf.getPosX(), wolf.getPosY(), wolf.getPosZ(), 64D, wolf.world.func_234923_W_())));
                             }
                             wolf.playSound(SoundEvents.ENTITY_PLAYER_BURP, 0.3F, 1.0F + (wolf.getRNG().nextFloat() - wolf.getRNG().nextFloat()) * 0.2F);
                         }
@@ -251,7 +251,7 @@ public class EventHandlerServer
                         PlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(e.getKey());
                         if(player != null)
                         {
-                            BeeBarker.channel.sendTo(new PacketSpawnParticles(-1, player.getEntityId(), true), PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), 32D, player.dimension)));
+                            BeeBarker.channel.sendTo(new PacketSpawnParticles(-1, player.getEntityId(), true), PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), 32D, player.world.func_234923_W_())));
                         }
                     }
                     e.setValue(e.getValue() - 2);
