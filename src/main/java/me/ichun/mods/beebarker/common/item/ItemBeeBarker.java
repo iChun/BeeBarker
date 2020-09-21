@@ -117,7 +117,7 @@ public class ItemBeeBarker extends Item
                 {
                     list.add(new TranslationTextComponent("beebarker.easteregg.item"));
                 }
-                list.add(ITextComponent.Serializer.func_240643_a_(wolfDataTag.getString("CustomName")));
+                list.add(ITextComponent.Serializer.getComponentFromJson(wolfDataTag.getString("CustomName")));
             }
             StringBuilder sb = new StringBuilder();
             sb.append(I18n.format("beebarker.beeCharge")).append(": ");

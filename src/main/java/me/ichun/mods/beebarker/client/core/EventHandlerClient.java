@@ -6,6 +6,7 @@ import me.ichun.mods.beebarker.common.packet.PacketBark;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.item.DualHandedItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.HandSide;
@@ -95,7 +96,7 @@ public class EventHandlerClient
             Vector3d look = event.player.getLookVec();
             Vector3d pos;
             HandSide side = DualHandedItem.getHandSide(event.player, DualHandedItem.getUsableDualHandedItem(event.player));
-            if(event.player == Minecraft.getInstance().getRenderViewEntity() && Minecraft.getInstance().gameSettings.thirdPersonView == 0) //is first person
+            if(event.player == Minecraft.getInstance().getRenderViewEntity() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) //is first person
             {
                 double d = - look.z * 0.75D;
                 double d1 = look.y * 1.5D + 1.15D;

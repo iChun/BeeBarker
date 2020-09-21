@@ -4,6 +4,7 @@ import me.ichun.mods.beebarker.common.BeeBarker;
 import me.ichun.mods.beebarker.common.core.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.PacketBuffer;
@@ -59,7 +60,7 @@ public class PacketSpawnParticles extends AbstractPacket
         if(entityId == -1)
         {
             Entity ply = mc.world.getEntityByID(playerId);
-            if(ply instanceof LivingEntity && !(ply == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0))
+            if(ply instanceof LivingEntity && !(ply == mc.getRenderViewEntity() && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON))
             {
                 LivingEntity living = (LivingEntity)ply;
                 double d0 = living.world.rand.nextGaussian() * 0.02D;

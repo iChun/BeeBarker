@@ -61,7 +61,7 @@ public class BarkHelper
         }
         else
         {
-            BeeBarker.channel.sendTo(new PacketSpawnParticles(-1, living.getEntityId(), true), PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(living.getPosX(), living.getPosY(), living.getPosZ(), 32D, living.world.func_234923_W_())));
+            BeeBarker.channel.sendTo(new PacketSpawnParticles(-1, living.getEntityId(), true), PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(living.getPosX(), living.getPosY(), living.getPosZ(), 32D, living.world.getDimensionKey())));
         }
         for(int i = 0; i < BeeBarker.configCommon.beeCount; i++)
         {

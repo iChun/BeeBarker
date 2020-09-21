@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -34,7 +35,7 @@ public class RenderBee extends EntityRenderer<EntityBee>
         double offY = 0D;
         double offZ = 0D;
 
-        if(bee.getDataManager().get(EntityBee.SHOOTER_ID) == Minecraft.getInstance().getRenderViewEntity().getEntityId() && Minecraft.getInstance().getRenderViewEntity() instanceof LivingEntity && Minecraft.getInstance().gameSettings.thirdPersonView == 0)
+        if(bee.getDataManager().get(EntityBee.SHOOTER_ID) == Minecraft.getInstance().getRenderViewEntity().getEntityId() && Minecraft.getInstance().getRenderViewEntity() instanceof LivingEntity && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)
         {
             LivingEntity player = (LivingEntity)Minecraft.getInstance().getRenderViewEntity();
             LivingEntity renderedShooter = (LivingEntity)Minecraft.getInstance().getRenderViewEntity();
