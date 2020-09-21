@@ -95,7 +95,7 @@ public class ItemBeeBarker extends Item
                 wolfStack = new ItemStack(BeeBarker.Items.BEE_BARKER.get()); //Special unlimited BeeBarker
                 tag = new CompoundNBT();
                 wolfTag = new CompoundNBT();
-                wolfTag.putString("CustomName", "iChun");
+                wolfTag.putString("CustomName", "{\"text\":\"iChun\"}");
                 wolfTag.putByte("CollarColor", (byte)DyeColor.BLUE.getId());
                 wolfStack.setTag(tag);
                 wolfStack.getTag().put(WOLF_DATA_STRING, wolfTag);
@@ -113,11 +113,11 @@ public class ItemBeeBarker extends Item
             CompoundNBT wolfDataTag = is.getTag().getCompound(WOLF_DATA_STRING);
             if(wolfDataTag.contains("CustomName"))
             {
-                if(wolfDataTag.getString("CustomName").equals("iChun") && BeeBarker.configServer.easterEgg)
+                if(wolfDataTag.getString("CustomName").contains("\"text\":\"iChun\"") && BeeBarker.configServer.easterEgg)
                 {
                     list.add(new TranslationTextComponent("beebarker.easteregg.item"));
                 }
-                list.add(new StringTextComponent(wolfDataTag.getString("CustomName")));
+                list.add(ITextComponent.Serializer.func_240643_a_(wolfDataTag.getString("CustomName")));
             }
             StringBuilder sb = new StringBuilder();
             sb.append(I18n.format("beebarker.beeCharge")).append(": ");

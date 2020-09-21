@@ -268,7 +268,7 @@ public class EventHandlerServer
                 if(player != null)
                 {
                     ItemStack is = DualHandedItem.getUsableDualHandedItem(player);
-                    if(is.getItem() == BeeBarker.Items.BEE_BARKER.get() && is.getTag() != null && is.getTag().contains(ItemBeeBarker.WOLF_DATA_STRING) && BeeBarker.configServer.easterEgg && is.getTag().getCompound(ItemBeeBarker.WOLF_DATA_STRING).contains("CustomName") && is.getTag().getCompound(ItemBeeBarker.WOLF_DATA_STRING).getString("CustomName").equals("iChun"))
+                    if(is.getItem() == BeeBarker.Items.BEE_BARKER.get() && is.getTag() != null && is.getTag().contains(ItemBeeBarker.WOLF_DATA_STRING) && BeeBarker.configServer.easterEgg && is.getTag().getCompound(ItemBeeBarker.WOLF_DATA_STRING).contains("CustomName") && is.getTag().getCompound(ItemBeeBarker.WOLF_DATA_STRING).getString("CustomName").contains("\"text\":\"iChun\""))
                     {
                         if(player.ticksExisted % 4 == 0)
                         {
