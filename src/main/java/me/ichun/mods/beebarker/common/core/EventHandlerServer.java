@@ -135,7 +135,7 @@ public class EventHandlerServer
                         {
                             CompoundNBT wolfTag = new CompoundNBT();
                             wolfData.putInt(BEE_HIGHEST_CHARGE, wolfData.getInt(BEE_CHARGE_STRING));
-                            wolf.setSleeping(false); //func_233686_v_ = setSitting (1.16.3+ setSleeping)
+                            wolf.setQueuedToSit(false); //func_233686_v_ = setSitting (1.16.3+ setSleeping) now setQueuedToSit??
                             wolf.writeUnlessRemoved(wolfTag);
                             ItemStack wolfStack = new ItemStack(BeeBarker.Items.BEE_BARKER.get()); //1 damage so you can see the damage bar.
                             wolfStack.setDamage(wolfData.getBoolean("IsSuperBeeDog") ? 0 : wolfData.getInt(BEE_CHARGE_STRING) == 0 ? 250 : 1);
